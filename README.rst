@@ -1,6 +1,9 @@
 mprpc
 =====
 
+.. image:: https://badge.fury.io/py/mprpc.png
+    :target: http://badge.fury.io/py/mprpc
+
 mprpc is a fast MessagePack RPC implementation using `gevent <http://www.gevent.org/>`_.
 
 

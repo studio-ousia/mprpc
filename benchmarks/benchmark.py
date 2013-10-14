@@ -30,7 +30,7 @@ def call():
     print 'call: %d qps' % (NUM_CALLS / (time.time() - start))
 
 
-def call_using_pool():
+def call_using_connection_pool():
     from mprpc import RPCClient
 
     import gevent.pool
@@ -48,19 +48,16 @@ def call_using_pool():
     start = time.time()
     [None for _ in glet_pool.imap_unordered(_call, xrange(NUM_CALLS))]
 
-    print 'call_using_pool: %d qps' % (NUM_CALLS / (time.time() - start))
+    print 'call_using_connection_pool: %d qps' % (NUM_CALLS / (time.time() - start))
 
 
 if __name__ == '__main__':
-    # launch the benchmark server as a separated process
     p = multiprocessing.Process(target=run_sum_server)
     p.start()
 
     time.sleep(1)
 
-    # run benchmarks
     call()
-    call_using_pool()
+    call_using_connection_pool()
 
-    # terminate the server
     p.terminate()

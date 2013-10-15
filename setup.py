@@ -12,6 +12,8 @@ setup(
     packages=find_packages(),
     license=open('LICENSE').read(),
     include_package_data=True,
+    keywords=['rpc', 'msgpack', 'messagepack', 'msgpackrpc', 'messagepackrpc',
+              'messagepack rpc', 'gevent'],
     classifiers=(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',

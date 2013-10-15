@@ -14,7 +14,7 @@ Contents:
    :maxdepth: 2
 
    intro
-   benchmark
+   perf
    api
 
 

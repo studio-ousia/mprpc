@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 setup(
     name='mprpc',
     version='0.0.1',
-    description='A fast Messagepack RPC implementation for Python gevent',
+    description='A lightweight Messagepack RPC using Python gevent',
     author='Studio Ousia',
     author_email='admin@ousia.jp',
     url='http://github.com/studio-ousia/mprpc',

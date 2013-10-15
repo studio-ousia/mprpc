@@ -4,7 +4,7 @@ mprpc
 .. image:: https://badge.fury.io/py/mprpc.png
     :target: http://badge.fury.io/py/mprpc
 
-mprpc is a fast MessagePack RPC implementation using `gevent <http://www.gevent.org/>`_.
+mprpc is a lightweight `MessagePack RPC <https://github.com/msgpack-rpc/msgpack-rpc>`_ library. It enables you to easily build a distributed server-side system by writing a small amount of code. It is built on top of `gevent <http://www.gevent.org/>`_ and `MessagePack <http://msgpack.org/>`_. 
 
 
 Installation
@@ -48,39 +48,67 @@ RPC client
 
     from mprpc import RPCClient
 
-    def call():
-        client = RPCClient('127.0.0.1', 6000)
-        client.open()
+    client = RPCClient('127.0.0.1', 6000)
+    client.open()
 
+    print client.call('sum', 1, 2)
+
+
+RPC client with connection pooling using `gsocketpool <https://github.com/studio-ousia/gsocketpool>`_
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    import gsocketpool.pool
+    from mprpc import RPCClient
+
+    client_pool = gsocketpool.pool.Pool(RPCClient, dict(host='127.0.0.1', port=6000))
+
+    with client_pool.connection() as client:
         print client.call('sum', 1, 2)
 
-    def call_using_pool():
-        import gsocketpool.pool
-        import gevent.pool
 
-        options = dict(host='127.0.0.1', port=6000)
-        client_pool = gsocketpool.pool.Pool(RPCClient, options)
+Performance
+-----------
 
-        def _call(n):
-            with client_pool.connection() as client:
-                return client.call('sum', 1, 2)
+mprpc significantly outperforms the `official MessagePack RPC <https://github.com/msgpack-rpc/msgpack-rpc-python>`_ (**1.8x** faster), which is built using `Facebook's Tornado <http://www.tornadoweb.org/en/stable/>`_ and `MessagePack <http://msgpack.org/>`_, and `ZeroRPC <http://zerorpc.dotcloud.com/>`_ (**14x** faster), which is built using `ZeroMQ <http://zeromq.org/>`_ and `MessagePack <http://msgpack.org/>`_.
 
-        glet_pool = gevent.pool.Pool(10)
-        print [result for result in glet_pool.imap_unordered(_call, xrange(10))]
+Results
+^^^^^^^
 
-    call()
-    call_using_pool()
+.. image:: http://chart.googleapis.com/chart?chxl=0:|zerorpc|msgpack-rpc-python|mprpc+with+pool|mprpc&chxr=0,-5,156.667&chxs=0,676767,12,0,lt,676767&chxt=y&chbh=a,7,4&chs=550x150&cht=bhs&chco=4D89F9&chds=0,9790&chd=t:9061,9790,4976,655&chdl=Query+per+second&chdlp=b&chma=8,0,10
+    :width: 500px
+    :height: 150px
+    :alt: Performance Comparison
 
-Benchmark
----------
+mprpc
+~~~~~
 
 .. code-block:: bash
 
-    % python examples/benchmark.py
+    % python benchmarks/benchmark.py
     call: 9061 qps
-    call_using_pool: 9734 qps
+    call_using_connection_pool: 9790 qps
 
-NOTE: This significantly outperforms the `official MessagePack RPC <https://github.com/msgpack-rpc/msgpack-rpc-python>`_, which is based on `Facebook's Tornado <http://www.tornadoweb.org/en/stable/>`_. In our local environment, the QPS was around 4,000 using the benchmark code provided in the official implementation.
+
+Official MesssagePack RPC
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    % pip install msgpack-rpc-python
+    % python benchmarks/benchmark_msgpackrpc_official.py
+    call: 4976 qps
+
+ZeroRPC
+~~~~~~~
+
+.. code-block:: bash
+
+    % pip install zerorpc
+    % python benchmarks/benchmark_zerorpc.py
+    call: 655 qps
+
 
 Environment
 ^^^^^^^^^^^
@@ -88,6 +116,7 @@ Environment
 - OS: Mac OS X 10.8.5
 - CPU: Intel Core i7 2GHz
 - Memory: 8GB
+- Python: 2.7.3
 
 Documentation
 -------------

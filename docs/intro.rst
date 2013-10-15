@@ -42,26 +42,21 @@ RPC client
 
     from mprpc import RPCClient
 
-    def call():
-        client = RPCClient('127.0.0.1', 6000)
-        client.open()
+    client = RPCClient('127.0.0.1', 6000)
+    client.open()
 
+    print client.call('sum', 1, 2)
+
+
+RPC client with connection pooling using `gsocketpool <https://github.com/studio-ousia/gsocketpool>`_
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    import gsocketpool.pool
+    from mprpc import RPCClient
+
+    client_pool = gsocketpool.pool.Pool(RPCClient, dict(host='127.0.0.1', port=6000))
+
+    with client_pool.connection() as client:
         print client.call('sum', 1, 2)
-
-    def call_using_pool():
-        import gsocketpool.pool
-        import gevent.pool
-
-        options = dict(host='127.0.0.1', port=6000)
-        client_pool = gsocketpool.pool.Pool(RPCClient, options)
-
-        def _call(n):
-            with client_pool.connection() as client:
-                return client.call('sum', 1, 2)
-
-        glet_pool = gevent.pool.Pool(10)
-        print [result for result in glet_pool.imap_unordered(_call, xrange(10))]
-
-    call()
-    call_using_pool()
-

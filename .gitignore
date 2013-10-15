@@ -3,7 +3,7 @@
 *.egg
 .coverage
 .ropeproject
-.venv
+.venv*
 *.sublime-*
 build
 dist

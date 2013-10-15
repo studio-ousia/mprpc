@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mprpc',
-    version='0.0.1',
+    version='0.1',
     description='A lightweight MessagePack RPC library using Python gevent',
     long_description=open('README.rst').read(),
     author='Studio Ousia',
@@ -16,7 +16,7 @@ setup(
     keywords=['rpc', 'msgpack', 'messagepack', 'msgpackrpc', 'messagepackrpc',
               'messagepack rpc', 'gevent'],
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',

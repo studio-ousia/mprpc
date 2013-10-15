@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import time
-import zerorpc
 import multiprocessing
 
 NUM_CALLS = 10000
 
 
 def run_sum_server():
+    import zerorpc
+
     class SumServer(object):
         def sum(self, x, y):
             return x + y
@@ -18,6 +19,8 @@ def run_sum_server():
 
 
 def call():
+    import zerorpc
+
     client = zerorpc.Client()
     client.connect("tcp://127.0.0.1:6000")
 

@@ -46,8 +46,6 @@ class RPCClient(Connection):
         if lifetime:
             assert lifetime > 0, 'Lifetime must be a positive value'
             self._lifetime = time.time() + lifetime
-            # avoid many connections expire simultaneously
-            self._lifetime -= random.randint(0, 10)
         else:
             self._lifetime = None
 

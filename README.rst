@@ -78,8 +78,8 @@ mprpc significantly outperforms the `official MessagePack RPC <https://github.co
 Results
 ^^^^^^^
 
-.. image:: http://chart.googleapis.com/chart?chxl=0:|zerorpc|msgpack-rpc-python|mprpc+with+pool|mprpc&chxr=0,-5,156.667&chxs=0,676767,12,0,lt,676767&chxt=y&chbh=a,7,4&chs=550x150&cht=bhs&chco=4D89F9&chds=0,9790&chd=t:9061,9790,4976,655&chdl=Queries+per+second&chdlp=b&chma=8,0,10
-    :width: 500px
+.. image:: docs/img/perf.png
+    :width: 550px
     :height: 150px
     :alt: Performance Comparison
 

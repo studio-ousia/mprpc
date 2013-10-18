@@ -14,6 +14,12 @@ from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 cdef class RPCClient:
     """RPC client.
 
+    Usage:
+        >>> from mprpc import RPCClient
+        >>> client = RPCClient('127.0.0.1', 6000)
+        >>> print client.call('sum', 1, 2)
+        3
+
     :param str host: Hostname.
     :param int port: Port number.
     :param int timeout: (optional) Socket timeout.
@@ -23,12 +29,6 @@ cdef class RPCClient:
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack.
-
-    Usage:
-        >>> from mprpc import RPCClient
-        >>> client = RPCClient('127.0.0.1', 6000)
-        >>> print client.call('sum', 1, 2)
-        3
     """
 
     cdef str _host
@@ -139,7 +139,16 @@ cdef class RPCClient:
 
 
 class RPCPoolClient(RPCClient, Connection):
-    """Connection wrapper for `gsocketpool <https://github.com/studio-ousia/gsocketpool>`_.
+    """Wrapper class of :class:`RPCClient <mprpc.client.RPCClient>` for `gsocketpool <https://github.com/studio-ousia/gsocketpool>`_.
+
+    Usage:
+        >>> import gsocketpool.pool
+        >>> from mprpc import RPCPoolClient
+        >>> client_pool = gsocketpool.pool.Pool(RPCPoolClient, dict(host='127.0.0.1', port=6000))
+        >>> with client_pool.connection() as client:
+        ...     print client.call('sum', 1, 2)
+        ...
+        3
 
     :param str host: Hostname.
     :param int port: Port number.
@@ -184,7 +193,7 @@ class RPCPoolClient(RPCClient, Connection):
         """
 
         try:
-            RPCClient.call(self, method, *args)
+            return RPCClient.call(self, method, *args)
 
         except socket.timeout:
             self.reconnect()

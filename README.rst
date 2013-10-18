@@ -62,9 +62,9 @@ RPC client with connection pooling
 .. code-block:: python
 
     import gsocketpool.pool
-    from mprpc import RPCClient
+    from mprpc import RPCPoolClient
 
-    client_pool = gsocketpool.pool.Pool(RPCClient, dict(host='127.0.0.1', port=6000))
+    client_pool = gsocketpool.pool.Pool(RPCPoolClient, dict(host='127.0.0.1', port=6000))
 
     with client_pool.connection() as client:
         print client.call('sum', 1, 2)

@@ -7,7 +7,7 @@ mprpc
 .. image:: https://travis-ci.org/studio-ousia/mprpc.png?branch=master
     :target: https://travis-ci.org/studio-ousia/mprpc
 
-mprpc is a lightweight `MessagePack RPC <https://github.com/msgpack-rpc/msgpack-rpc>`_ library. It enables you to easily build a distributed server-side system by writing a small amount of code. It is built on the top of `gevent <http://www.gevent.org/>`_ and `MessagePack <http://msgpack.org/>`_. 
+mprpc is a lightweight `MessagePack RPC <https://github.com/msgpack-rpc/msgpack-rpc>`_ library. It enables you to easily build a distributed server-side system by writing a small amount of code. It is built on top of `gevent <http://www.gevent.org/>`_ and `MessagePack <http://msgpack.org/>`_. 
 
 
 Installation
@@ -111,14 +111,6 @@ ZeroRPC
     % python benchmarks/benchmark_zerorpc.py
     call: 655 qps
 
-
-Environment
-^^^^^^^^^^^
-
-- OS: Mac OS X 10.8.5
-- CPU: Intel Core i7 2GHz
-- Memory: 8GB
-- Python: 2.7.3
 
 Documentation
 -------------

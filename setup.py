@@ -10,7 +10,7 @@ if 'setuptools.extension' in sys.modules:
 
 setup(
     name='mprpc',
-    version='0.1',
+    version='0.1.1',
     description='A lightweight MessagePack RPC library using Python gevent',
     long_description=open('README.rst').read(),
     author='Studio Ousia',

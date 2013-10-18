@@ -17,8 +17,8 @@ mprpc
 .. code-block:: bash
 
     % python benchmarks/benchmark.py
-    call: 9061 qps
-    call_using_connection_pool: 9790 qps
+    call: 9508 qps
+    call_using_connection_pool: 10172 qps
 
 
 Official MesssagePack RPC

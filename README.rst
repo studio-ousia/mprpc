@@ -78,7 +78,7 @@ mprpc significantly outperforms the `official MessagePack RPC <https://github.co
 Results
 ^^^^^^^
 
-.. image:: docs/img/perf.png
+.. image:: https://raw.github.com/studio-ousia/mprpc/master/docs/img/perf.png
     :width: 550px
     :height: 150px
     :alt: Performance Comparison

@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from setuptools import setup, find_packages
+from Cython.Build import cythonize
+
+if 'setuptools.extension' in sys.modules:
+    m = sys.modules['setuptools.extension']
+    m.Extension.__dict__ = m._Extension.__dict__
 
 setup(
     name='mprpc',
@@ -11,6 +17,7 @@ setup(
     author_email='admin@ousia.jp',
     url='http://github.com/studio-ousia/mprpc',
     packages=find_packages(),
+    ext_modules=cythonize('mprpc/*.pyx'),
     license=open('LICENSE').read(),
     include_package_data=True,
     keywords=['rpc', 'msgpack', 'messagepack', 'msgpackrpc', 'messagepackrpc',
@@ -28,6 +35,9 @@ setup(
         'gsocketpool',
         'gevent',
         'msgpack-python',
+    ],
+    setup_requires=[
+        'setuptools_cython',
     ],
     tests_require=[
         'nose',

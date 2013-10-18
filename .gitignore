@@ -1,4 +1,6 @@
 *.pyc
+*.c
+*.so
 *.egg-info
 *.egg
 .coverage

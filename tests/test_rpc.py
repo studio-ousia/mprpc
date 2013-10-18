@@ -36,11 +36,11 @@ class TestRPC(object):
 
     @patch('mprpc.client.socket')
     def test_open_and_close(self, mock_socket):
-        client = RPCClient(HOST, PORT)
         mock_socket_ins = Mock()
         mock_socket.create_connection.return_value = mock_socket_ins
 
-        client.open()
+        client = RPCClient(HOST, PORT)
+
         ok_(client.is_connected())
 
         mock_socket.create_connection.assert_called_once_with((HOST, PORT))
@@ -50,17 +50,18 @@ class TestRPC(object):
         ok_(mock_socket_ins.close.called)
         ok_(not client.is_connected())
 
-    def test_open_with_timeout(self):
+    @patch('mprpc.client.socket')
+    def test_open_with_timeout(self, mock_socket):
+        mock_socket_ins = Mock()
+        mock_socket.create_connection.return_value = mock_socket_ins
+
         client = RPCClient(HOST, PORT, timeout=5.0)
 
-        client.open()
-
-        eq_(5.0, client._socket.gettimeout())
+        mock_socket_ins.settimeout.assert_called_once_with(5.0)
         ok_(client.is_connected())
 
     def test_call(self):
         client = RPCClient(HOST, PORT)
-        client.open()
 
         ret = client.call('echo', 'message')
         eq_('message', ret)
@@ -71,7 +72,6 @@ class TestRPC(object):
     @raises(RPCError)
     def test_call_server_side_exception(self):
         client = RPCClient(HOST, PORT)
-        client.open()
 
         try:
             ret = client.call('raise_error')
@@ -84,20 +84,5 @@ class TestRPC(object):
     @raises(socket.timeout)
     def test_call_socket_timeout(self):
         client = RPCClient(HOST, PORT, timeout=0.1)
-        client.open()
 
-        client.reconnect = Mock()
-
-        try:
-            client.call('echo_delayed', 'message', 1)
-        except socket.timeout:
-            ok_(client.reconnect.called)
-            raise
-
-    def test_is_expired(self):
-        client = RPCClient(HOST, PORT, lifetime=0.1)
-        client.open()
-
-        ok_(not client.is_expired())
-        gevent.sleep(0.1)
-        ok_(client.is_expired())
+        client.call('echo_delayed', 'message', 1)

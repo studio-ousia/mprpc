@@ -8,12 +8,14 @@ To install mprpc, simply:
 
 .. code-block:: bash
 
+    $ pip install Cython
     $ pip install mprpc
 
 Alternatively,
 
 .. code-block:: bash
 
+    $ easy_install Cython
     $ easy_install mprpc
 
 Examples
@@ -43,8 +45,6 @@ RPC client
     from mprpc import RPCClient
 
     client = RPCClient('127.0.0.1', 6000)
-    client.open()
-
     print client.call('sum', 1, 2)
 
 

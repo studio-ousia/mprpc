@@ -22,7 +22,6 @@ def call():
     from mprpc import RPCClient
 
     client = RPCClient('127.0.0.1', 6000)
-    client.open()
 
     start = time.time()
     [client.call('sum', 1, 2) for _ in xrange(NUM_CALLS)]
@@ -31,18 +30,17 @@ def call():
 
 
 def call_using_connection_pool():
-    from mprpc import RPCClient
+    from mprpc import RPCPoolClient
 
     import gevent.pool
     import gsocketpool.pool
-
-    options = dict(host='127.0.0.1', port=6000)
-    client_pool = gsocketpool.pool.Pool(RPCClient, options, initial_connections=20)
 
     def _call(n):
         with client_pool.connection() as client:
             return client.call('sum', 1, 2)
 
+    options = dict(host='127.0.0.1', port=6000)
+    client_pool = gsocketpool.pool.Pool(RPCPoolClient, options, initial_connections=20)
     glet_pool = gevent.pool.Pool(20)
 
     start = time.time()

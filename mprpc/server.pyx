@@ -1,3 +1,4 @@
+# cython: profile=False
 # -*- coding: utf-8 -*-
 
 import logging
@@ -8,7 +9,7 @@ from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 from exceptions import MethodNotFoundError, RPCProtocolError
 
 
-class RPCServer(object):
+cdef class RPCServer:
     """RPC server.
 
     This class is assumed to be used with gevent StreamServer.
@@ -33,6 +34,11 @@ class RPCServer(object):
         >>> server.serve_forever()
     """
 
+    cdef _socket
+    cdef _packer
+    cdef _unpacker
+    cdef _send_lock
+
     def __init__(self, sock, address, pack_encoding='utf-8',
                  unpack_encoding='utf-8'):
         self._socket = sock
@@ -51,6 +57,10 @@ class RPCServer(object):
             logging.exception('Failed to clean up the socket')
 
     def _run(self):
+        cdef bytes data
+        cdef tuple req, args
+        cdef int msg_id
+
         while True:
             data = self._socket.recv(SOCKET_RECV_SIZE)
             if not data:
@@ -75,18 +85,14 @@ class RPCServer(object):
             else:
                 self._send_result(ret, msg_id)
 
-    def _parse_request(self, req):
-        if (not isinstance(req, tuple) or
-            len(req) != 4 or
-            req[0] != MSGPACKRPC_REQUEST):
+    cdef tuple _parse_request(self, tuple req):
+        if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
             raise RPCProtocolError('Invalid protocol')
+
+        cdef tuple args
+        cdef int msg_id
 
         (_, msg_id, method_name, args) = req
-
-        if (not isinstance(msg_id, int) or
-            not isinstance(method_name, basestring) or
-            not isinstance(args, tuple)):
-            raise RPCProtocolError('Invalid protocol')
 
         if method_name.startswith('_'):
             raise MethodNotFoundError('Method not found: %s', method_name)
@@ -100,15 +106,15 @@ class RPCServer(object):
 
         return (msg_id, method, args)
 
-    def _send_result(self, result, msg_id):
+    cdef _send_result(self, object result, int msg_id):
         msg = (MSGPACKRPC_RESPONSE, msg_id, None, result)
         self._send(msg)
 
-    def _send_error(self, error, msg_id):
+    cdef _send_error(self, str error, int msg_id):
         msg = (MSGPACKRPC_RESPONSE, msg_id, error, None)
         self._send(msg)
 
-    def _send(self, msg):
+    cdef _send(self, msg):
         self._send_lock.acquire()
         try:
             self._socket.sendall(self._packer.pack(msg))

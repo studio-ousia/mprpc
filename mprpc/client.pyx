@@ -147,7 +147,7 @@ class RPCPoolClient(RPCClient, Connection):
         >>> client_pool = gsocketpool.pool.Pool(RPCPoolClient, dict(host='127.0.0.1', port=6000))
         >>> with client_pool.connection() as client:
         ...     print client.call('sum', 1, 2)
-        ...
+        ... 
         3
 
     :param str host: Hostname.

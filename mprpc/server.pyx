@@ -68,22 +68,23 @@ cdef class RPCServer:
                 break
 
             self._unpacker.feed(data)
-            try:
-                req = self._unpacker.next()
-            except StopIteration:
-                continue
+            while True:
+                try:
+                    req = self._unpacker.next()
+                except StopIteration:
+                    break
 
-            (msg_id, method, args) = self._parse_request(req)
+                (msg_id, method, args) = self._parse_request(req)
 
-            try:
-                ret = method(*args)
+                try:
+                    ret = method(*args)
 
-            except Exception, e:
-                logging.exception('An error has occurred')
-                self._send_error(str(e), msg_id)
+                except Exception, e:
+                    logging.exception('An error has occurred')
+                    self._send_error(str(e), msg_id)
 
-            else:
-                self._send_result(ret, msg_id)
+                else:
+                    self._send_result(ret, msg_id)
 
     cdef tuple _parse_request(self, tuple req):
         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):

@@ -4,6 +4,7 @@
 import logging
 import msgpack
 import time
+import gevent
 from gevent import socket
 from gsocketpool.connection import Connection
 
@@ -89,7 +90,7 @@ cdef class RPCClient:
         else:
             return False
 
-    def call(self, str method, *args):
+    def _call(self, str method, *args):
         """Calls a RPC method.
 
         :param str method: Method name.
@@ -113,6 +114,29 @@ cdef class RPCClient:
                 continue
 
         return self._parse_response(response)
+    
+    def call(self, str method, *args, reconnect=5):
+        """Calls a RPC method.
+
+        :param str method: Method name.
+        :param args: Method arguments.
+        :param reconnect: reconnect time interval, 0-not reconnect
+        """
+        if reconnect is 0:
+            return self._call(method, *args)
+        else:
+            try:
+                return self._call(method, *args)
+            except Exception as e:
+                client.close()
+                while 1:
+                    try:
+                        logging.debug('try reconnecting..')
+                        self.open()
+                        logging.debug('reconnected.')
+                        return self._call(method, *args)
+                    except:
+                        gevent.sleep(reconnect)
 
     cdef bytes _create_request(self, method, tuple args):
         self._msg_id += 1

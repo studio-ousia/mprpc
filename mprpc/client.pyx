@@ -128,7 +128,7 @@ cdef class RPCClient:
             try:
                 return self._call(method, *args)
             except Exception as e:
-                client.close()
+                self.close()
                 while 1:
                     try:
                         logging.debug('try reconnecting..')

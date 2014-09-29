@@ -120,23 +120,25 @@ cdef class RPCClient:
 
         :param str method: Method name.
         :param args: Method arguments.
-        :param reconnect: reconnect time interval, 0-not reconnect
+        :param reconnect: reconnect time interval, 0-not reconnect.
         """
         if reconnect is 0:
             return self._call(method, *args)
-        else:
-            try:
-                return self._call(method, *args)
-            except Exception as e:
-                self.close()
-                while 1:
-                    try:
-                        logging.debug('try reconnecting..')
-                        self.open()
-                        logging.debug('reconnected.')
-                        return self._call(method, *args)
-                    except:
-                        gevent.sleep(reconnect)
+        
+        try:
+            return self._call(method, *args)
+        
+        except Exception as e:
+            self.close()
+            while 1:
+                try:
+                    logging.debug('try reconnecting...')
+                    self.open()
+                    logging.debug('reconnected.')
+                    return self._call(method, *args)
+                
+                except:
+                    gevent.sleep(reconnect)
 
     cdef bytes _create_request(self, method, tuple args):
         self._msg_id += 1
@@ -209,15 +211,16 @@ class RPCPoolClient(RPCClient, Connection):
         else:
             return False
 
-    def call(self, str method, *args):
+    def call(self, str method, *args, reconnect=5):
         """Calls a RPC method.
 
         :param str method: Method name.
         :param args: Method arguments.
+        :param reconnect: reconnect time interval, 0-not reconnect.
         """
 
         try:
-            return RPCClient.call(self, method, *args)
+            return RPCClient.call(self, method, *args, reconnect=reconnect)
 
         except socket.timeout:
             self.reconnect()

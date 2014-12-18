@@ -8,6 +8,8 @@ from gevent.coros import Semaphore
 from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 from exceptions import MethodNotFoundError, RPCProtocolError
 
+logger = logging.getLogger(__name__)
+
 
 cdef class RPCServer:
     """RPC server.
@@ -54,7 +56,7 @@ cdef class RPCServer:
         try:
             self._socket.close()
         except:
-            logging.exception('Failed to clean up the socket')
+            logger.exception('Failed to clean up the socket')
 
     def _run(self):
         cdef bytes data
@@ -64,7 +66,7 @@ cdef class RPCServer:
         while True:
             data = self._socket.recv(SOCKET_RECV_SIZE)
             if not data:
-                logging.debug('Client disconnected')
+                logger.debug('Client disconnected')
                 break
 
             self._unpacker.feed(data)
@@ -79,7 +81,7 @@ cdef class RPCServer:
                 ret = method(*args)
 
             except Exception, e:
-                logging.exception('An error has occurred')
+                logger.exception('An error has occurred')
                 self._send_error(str(e), msg_id)
 
             else:

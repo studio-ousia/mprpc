@@ -11,6 +11,8 @@ from gsocketpool.connection import Connection
 from exceptions import RPCProtocolError, RPCError
 from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 
+logger = logging.getLogger(__name__)
+
 
 cdef class RPCClient:
     """RPC client.
@@ -60,7 +62,7 @@ cdef class RPCClient:
 
         assert self._socket is None, 'The connection has already been established'
 
-        logging.debug('openning a msgpackrpc connection')
+        logger.debug('openning a msgpackrpc connection')
         self._socket = socket.create_connection((self._host, self._port))
 
         if self._timeout:
@@ -71,11 +73,11 @@ cdef class RPCClient:
 
         assert self._socket is not None, 'Attempt to close an unopened socket'
 
-        logging.debug('Closing a msgpackrpc connection')
+        logger.debug('Closing a msgpackrpc connection')
         try:
             self._socket.close()
         except:
-            logging.exception('An error has occurred while closing the socket')
+            logger.exception('An error has occurred while closing the socket')
 
         self._socket = None
 
@@ -132,9 +134,9 @@ cdef class RPCClient:
             self.close()
             while 1:
                 try:
-                    logging.debug('try reconnecting...')
+                    logger.debug('try reconnecting...')
                     self.open()
-                    logging.debug('reconnected.')
+                    logger.debug('reconnected.')
                     return self._call(method, *args)
                 
                 except:

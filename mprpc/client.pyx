@@ -32,6 +32,7 @@ cdef class RPCClient:
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack.
+    :param reconnect_delay: reconnect time interval, 0-not reconnect.
     """
 
     cdef str _host
@@ -43,7 +44,7 @@ cdef class RPCClient:
     cdef _unpacker
 
     def __init__(self, host, port, timeout=None, lazy=False,
-                 pack_encoding='utf-8', unpack_encoding='utf-8'):
+                 pack_encoding='utf-8', unpack_encoding='utf-8', reconnect_delay=0):
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -53,10 +54,12 @@ cdef class RPCClient:
 
         self._packer = msgpack.Packer(encoding=pack_encoding)
         self._unpacker = msgpack.Unpacker(encoding=unpack_encoding, use_list=False)
-
+        
+        self._reconnect_delay = reconnect_delay
+        
         if not lazy:
             self.open()
-
+        
     def open(self):
         """Opens a connection."""
 
@@ -117,14 +120,13 @@ cdef class RPCClient:
 
         return self._parse_response(response)
     
-    def call(self, str method, *args, reconnect_delay=5):
+    def call(self, str method, *args):
         """Calls a RPC method.
 
         :param str method: Method name.
         :param args: Method arguments.
-        :param reconnect_delay: reconnect time interval, 0-not reconnect.
         """
-        if reconnect_delay is 0:
+        if self._reconnect_delay is 0:
             return self._call(method, *args)
         
         try:
@@ -140,7 +142,7 @@ cdef class RPCClient:
                     return self._call(method, *args)
                 
                 except:
-                    gevent.sleep(reconnect_delay)
+                    gevent.sleep(self._reconnect_delay)
 
     cdef bytes _create_request(self, method, tuple args):
         self._msg_id += 1
@@ -187,10 +189,11 @@ class RPCPoolClient(RPCClient, Connection):
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack.
+    :param reconnect_delay: reconnect time interval, 0-not reconnect.
     """
 
     def __init__(self, host, port, timeout=None, lifetime=None,
-                 pack_encoding='utf-8', unpack_encoding='utf-8'):
+                 pack_encoding='utf-8', unpack_encoding='utf-8', reconnect_delay=0):
 
         if lifetime:
             assert lifetime > 0, 'Lifetime must be a positive value'
@@ -199,7 +202,7 @@ class RPCPoolClient(RPCClient, Connection):
             self._lifetime = None
 
         RPCClient.__init__(self, host, port, timeout=timeout, lazy=True,
-                           pack_encoding=pack_encoding, unpack_encoding=unpack_encoding)
+                           pack_encoding=pack_encoding, unpack_encoding=unpack_encoding, reconnect_delay=reconnect_delay)
 
     def is_expired(self):
         """Returns whether the connection has been expired.
@@ -213,16 +216,15 @@ class RPCPoolClient(RPCClient, Connection):
         else:
             return False
 
-    def call(self, str method, *args, reconnect_delay=5):
+    def call(self, str method, *args):
         """Calls a RPC method.
 
         :param str method: Method name.
         :param args: Method arguments.
-        :param reconnect_delay: reconnect time interval, 0-not reconnect.
         """
 
         try:
-            return RPCClient.call(self, method, *args, reconnect_delay=reconnect_delay)
+            return RPCClient.call(self, method, *args)
 
         except socket.timeout:
             self.reconnect()

@@ -17,14 +17,12 @@ To install mprpc, simply:
 
 .. code-block:: bash
 
-    $ pip install Cython
     $ pip install mprpc
 
 Alternatively,
 
 .. code-block:: bash
 
-    $ easy_install Cython
     $ easy_install mprpc
 
 Examples

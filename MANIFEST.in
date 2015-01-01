@@ -1,2 +1,3 @@
 include README.rst LICENSE requirements.txt
+include mprpc/*.c
 include mprpc/*.pyx

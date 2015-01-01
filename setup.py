@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
-from Cython.Build import cythonize
+from setuptools import setup, Extension, find_packages
 
 setup(
     name='mprpc',
@@ -12,7 +11,10 @@ setup(
     author_email='admin@ousia.jp',
     url='http://github.com/studio-ousia/mprpc',
     packages=find_packages(),
-    ext_modules=cythonize('mprpc/*.pyx'),
+    ext_modules=[
+        Extension('mprpc.client', ['mprpc/client.c']),
+        Extension('mprpc.server', ['mprpc/server.c'])
+    ],
     license=open('LICENSE').read(),
     include_package_data=True,
     keywords=['rpc', 'msgpack', 'messagepack', 'msgpackrpc', 'messagepackrpc',

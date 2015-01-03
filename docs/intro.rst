@@ -33,7 +33,7 @@ RPC server
         def sum(self, x, y):
             return x + y
 
-    server = StreamServer(('127.0.0.1', 6000), SumServer)
+    server = StreamServer(('127.0.0.1', 6000), SumServer())
     server.serve_forever()
 
 

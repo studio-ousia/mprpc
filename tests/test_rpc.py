@@ -28,7 +28,7 @@ class TestRPC(object):
             def raise_error(self):
                 raise Exception('error msg')
 
-        self._server = StreamServer((HOST, PORT), TestServer)
+        self._server = StreamServer((HOST, PORT), TestServer())
         self._glet = gevent.spawn(self._server.serve_forever)
 
     def tearDown(self):

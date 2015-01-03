@@ -1,7 +1,7 @@
 # cython: profile=False
 # -*- coding: utf-8 -*-
 
-import logging
+import gevent.socket
 import msgpack
 from gevent.coros import Semaphore
 
@@ -14,8 +14,6 @@ cdef class RPCServer:
 
     This class is assumed to be used with gevent StreamServer.
 
-    :param socket: Socket object.
-    :param tuple address: Client address.
     :param str pack_encoding: (optional) Character encoding used to pack data
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
@@ -24,47 +22,41 @@ cdef class RPCServer:
     Usage:
         >>> from gevent.server import StreamServer
         >>> import mprpc
-        >>> 
+        >>>
         >>> class SumServer(mprpc.RPCServer):
         ...     def sum(self, x, y):
         ...         return x + y
-        ... 
-        >>> 
-        >>> server = StreamServer(('127.0.0.1', 6000), SumServer)
+        ...
+        >>>
+        >>> server = StreamServer(('127.0.0.1', 6000), SumServer())
         >>> server.serve_forever()
     """
 
-    cdef _socket
     cdef _packer
     cdef _unpacker
-    cdef _send_lock
 
-    def __init__(self, sock, address, pack_encoding='utf-8',
-                 unpack_encoding='utf-8'):
-        self._socket = sock
+    def __init__(self, *args, **kwargs):
+        pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
+        unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
 
         self._packer = msgpack.Packer(encoding=pack_encoding)
         self._unpacker = msgpack.Unpacker(encoding=unpack_encoding,
                                           use_list=False)
-        self._send_lock = Semaphore()
 
-        self._run()
+        if args and isinstance(args[0], gevent.socket.socket):
+            self._run(_RPCConnection(args[0]))
 
-    def __del__(self):
-        try:
-            self._socket.close()
-        except:
-            logging.exception('Failed to clean up the socket')
+    def __call__(self, sock, _):
+        self._run(_RPCConnection(sock))
 
-    def _run(self):
+    def _run(self, _RPCConnection conn):
         cdef bytes data
         cdef tuple req, args
         cdef int msg_id
 
         while True:
-            data = self._socket.recv(SOCKET_RECV_SIZE)
+            data = conn.recv(SOCKET_RECV_SIZE)
             if not data:
-                logging.debug('Client disconnected')
                 break
 
             self._unpacker.feed(data)
@@ -79,11 +71,10 @@ cdef class RPCServer:
                 ret = method(*args)
 
             except Exception, e:
-                logging.exception('An error has occurred')
-                self._send_error(str(e), msg_id)
+                self._send_error(str(e), msg_id, conn)
 
             else:
-                self._send_result(ret, msg_id)
+                self._send_result(ret, msg_id, conn)
 
     cdef tuple _parse_request(self, tuple req):
         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
@@ -106,18 +97,36 @@ cdef class RPCServer:
 
         return (msg_id, method, args)
 
-    cdef _send_result(self, object result, int msg_id):
+    cdef _send_result(self, object result, int msg_id, _RPCConnection conn):
         msg = (MSGPACKRPC_RESPONSE, msg_id, None, result)
-        self._send(msg)
+        conn.send(self._packer.pack(msg))
 
-    cdef _send_error(self, str error, int msg_id):
+    cdef _send_error(self, str error, int msg_id, _RPCConnection conn):
         msg = (MSGPACKRPC_RESPONSE, msg_id, error, None)
-        self._send(msg)
+        conn.send(self._packer.pack(msg))
 
-    cdef _send(self, msg):
+
+cdef class _RPCConnection:
+    cdef _socket
+    cdef _send_lock
+
+    def __init__(self, socket):
+        self._socket = socket
+        self._send_lock = Semaphore()
+
+    cdef recv(self, int buf_size):
+        return self._socket.recv(buf_size)
+
+    cdef send(self, str msg):
         self._send_lock.acquire()
         try:
-            self._socket.sendall(self._packer.pack(msg))
+            self._socket.sendall(msg)
 
         finally:
             self._send_lock.release()
+
+    def __del__(self):
+        try:
+            self._socket.close()
+        except:
+            pass

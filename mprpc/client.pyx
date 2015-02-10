@@ -40,7 +40,7 @@ cdef class RPCClient:
     cdef _unpacker
 
     def __init__(self, host, port, timeout=None, lazy=False,
-                 pack_encoding='utf-8', unpack_encoding='utf-8'):
+                 pack_encoding='utf-8', unpack_encoding='utf-8', use_bin_type=False):
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -48,7 +48,7 @@ cdef class RPCClient:
         self._msg_id = 0
         self._socket = None
 
-        self._packer = msgpack.Packer(encoding=pack_encoding)
+        self._packer = msgpack.Packer(encoding=pack_encoding, use_bin_type=use_bin_type)
         self._unpacker = msgpack.Unpacker(encoding=unpack_encoding, use_list=False)
 
         if not lazy:

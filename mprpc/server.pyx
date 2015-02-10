@@ -38,6 +38,7 @@ cdef class RPCServer:
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
         unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
+        self._tcp_no_delay = kwargs.pop('tcp_no_delay', False)
 
         self._packer = msgpack.Packer(encoding=pack_encoding)
         self._unpacker = msgpack.Unpacker(encoding=unpack_encoding,
@@ -47,6 +48,8 @@ cdef class RPCServer:
             self._run(_RPCConnection(args[0]))
 
     def __call__(self, sock, _):
+        if self._tcp_no_delay:
+            sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)
         self._run(_RPCConnection(sock))
 
     def _run(self, _RPCConnection conn):

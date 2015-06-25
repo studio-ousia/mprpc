@@ -40,7 +40,7 @@ cdef class RPCClient:
     cdef _unpacker
 
     def __init__(self, host, port, timeout=None, lazy=False,
-                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False):
+                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False, use_bin_type=False):
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -49,7 +49,7 @@ cdef class RPCClient:
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
 
-        self._packer = msgpack.Packer(encoding=pack_encoding)
+        self._packer = msgpack.Packer(encoding=pack_encoding, use_bin_type=use_bin_type)
         self._unpacker = msgpack.Unpacker(encoding=unpack_encoding, use_list=False)
 
         if not lazy:
@@ -167,7 +167,7 @@ class RPCPoolClient(RPCClient, Connection):
     """
 
     def __init__(self, host, port, timeout=None, lifetime=None,
-                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False):
+                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False, use_bin_type=False):
 
         if lifetime:
             assert lifetime > 0, 'Lifetime must be a positive value'
@@ -176,7 +176,7 @@ class RPCPoolClient(RPCClient, Connection):
             self._lifetime = None
 
         RPCClient.__init__(self, host, port, timeout=timeout, lazy=True,
-                           pack_encoding=pack_encoding, unpack_encoding=unpack_encoding, tcp_no_delay=False)
+                           pack_encoding=pack_encoding, unpack_encoding=unpack_encoding, tcp_no_delay=False, use_bin_type=use_bin_type)
 
     def is_expired(self):
         """Returns whether the connection has been expired.

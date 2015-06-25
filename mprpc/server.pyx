@@ -38,9 +38,10 @@ cdef class RPCServer:
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
         unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
+        use_bin_type = kwargs.pop('use_bin_type', False)
         self._tcp_no_delay = kwargs.pop('tcp_no_delay', False)
 
-        self._packer = msgpack.Packer(encoding=pack_encoding)
+        self._packer = msgpack.Packer(encoding=pack_encoding, use_bin_type=use_bin_type)
         self._unpacker = msgpack.Unpacker(encoding=unpack_encoding,
                                           use_list=False)
 

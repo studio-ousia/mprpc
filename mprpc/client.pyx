@@ -37,7 +37,7 @@ cdef class RPCClient:
     cdef _timeout
     cdef _socket
     cdef _packer
-    cdef _unpacker
+    cdef _unpack_encoding
     cdef _tcp_no_delay
 
     def __init__(self, host, port, timeout=None, lazy=False,
@@ -49,9 +49,9 @@ cdef class RPCClient:
         self._msg_id = 0
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
+        self._unpack_encoding = unpack_encoding
 
         self._packer = msgpack.Packer(encoding=pack_encoding)
-        self._unpacker = msgpack.Unpacker(encoding=unpack_encoding, use_list=False)
 
         if not lazy:
             self.open()
@@ -107,13 +107,15 @@ cdef class RPCClient:
         cdef bytes data
         self._socket.sendall(req)
 
+        unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
+                                    use_list=False)
         while True:
             data = self._socket.recv(SOCKET_RECV_SIZE)
             if not data:
                 raise IOError('Connection closed')
-            self._unpacker.feed(data)
+            unpacker.feed(data)
             try:
-                response = self._unpacker.next()
+                response = unpacker.next()
                 break
             except StopIteration:
                 continue

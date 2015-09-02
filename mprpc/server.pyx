@@ -33,17 +33,15 @@ cdef class RPCServer:
     """
 
     cdef _packer
-    cdef _unpacker
+    cdef _unpack_encoding
     cdef _tcp_no_delay
 
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
-        unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
+        self._unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
         self._tcp_no_delay = kwargs.pop('tcp_no_delay', False)
 
         self._packer = msgpack.Packer(encoding=pack_encoding)
-        self._unpacker = msgpack.Unpacker(encoding=unpack_encoding,
-                                          use_list=False)
 
         if args and isinstance(args[0], gevent.socket.socket):
             self._run(_RPCConnection(args[0]))
@@ -58,14 +56,16 @@ cdef class RPCServer:
         cdef tuple req, args
         cdef int msg_id
 
+        unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
+                                    use_list=False)
         while True:
             data = conn.recv(SOCKET_RECV_SIZE)
             if not data:
                 break
 
-            self._unpacker.feed(data)
+            unpacker.feed(data)
             try:
-                req = self._unpacker.next()
+                req = unpacker.next()
             except StopIteration:
                 continue
 

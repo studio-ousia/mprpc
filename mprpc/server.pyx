@@ -34,6 +34,7 @@ cdef class RPCServer:
 
     cdef _packer
     cdef _unpacker
+    cdef _tcp_no_delay
 
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')

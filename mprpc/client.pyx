@@ -38,6 +38,7 @@ cdef class RPCClient:
     cdef _socket
     cdef _packer
     cdef _unpacker
+    cdef _tcp_no_delay
 
     def __init__(self, host, port, timeout=None, lazy=False,
                  pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False):

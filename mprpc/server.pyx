@@ -18,9 +18,8 @@ cdef class RPCServer:
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack
-    :param dict pack_params: (optional) Parameters to pass to Messsagepack
-        Packer
-    :param dict unpack_params: (optional) Parameters to pass to Messsagepack
+    :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
+    :param dict unpack_params: (optional) Parameters to pass to Messagepack
         Unpacker
 
     Usage:

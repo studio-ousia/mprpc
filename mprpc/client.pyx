@@ -29,6 +29,10 @@ cdef class RPCClient:
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack.
+    :param dict pack_params: (optional) Parameters to pass to Messsagepack
+        Packer
+    :param dict unpack_params: (optional) Parameters to pass to Messsagepack
+        Unpacker
     """
 
     cdef str _host
@@ -38,10 +42,13 @@ cdef class RPCClient:
     cdef _socket
     cdef _packer
     cdef _unpack_encoding
+    cdef _unpack_params
     cdef _tcp_no_delay
 
     def __init__(self, host, port, timeout=None, lazy=False,
-                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False):
+                 pack_encoding='utf-8', unpack_encoding='utf-8',
+                 pack_params=dict(), unpack_params=dict(use_list=False),
+                 tcp_no_delay=False):
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -50,8 +57,9 @@ cdef class RPCClient:
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
         self._unpack_encoding = unpack_encoding
+        self._unpack_params = unpack_params
 
-        self._packer = msgpack.Packer(encoding=pack_encoding)
+        self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 
         if not lazy:
             self.open()
@@ -108,7 +116,7 @@ cdef class RPCClient:
         self._socket.sendall(req)
 
         unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
-                                    use_list=False)
+                                    **self._unpack_params)
         while True:
             data = self._socket.recv(SOCKET_RECV_SIZE)
             if not data:
@@ -155,7 +163,7 @@ class RPCPoolClient(RPCClient, Connection):
         >>> client_pool = gsocketpool.pool.Pool(RPCPoolClient, dict(host='127.0.0.1', port=6000))
         >>> with client_pool.connection() as client:
         ...     print client.call('sum', 1, 2)
-        ... 
+        ...
         3
 
     :param str host: Hostname.
@@ -167,10 +175,16 @@ class RPCPoolClient(RPCClient, Connection):
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack.
+    :param dict pack_params: (optional) Parameters to pass to Messsagepack
+        Packer
+    :param dict unpack_params: (optional) Parameters to pass to Messsagepack
+        Unpacker
     """
 
     def __init__(self, host, port, timeout=None, lifetime=None,
-                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False):
+                 pack_encoding='utf-8', unpack_encoding='utf-8',
+                 pack_params=dict(), unpack_params=dict(use_list=False),
+                 tcp_no_delay=False):
 
         if lifetime:
             assert lifetime > 0, 'Lifetime must be a positive value'
@@ -178,8 +192,11 @@ class RPCPoolClient(RPCClient, Connection):
         else:
             self._lifetime = None
 
-        RPCClient.__init__(self, host, port, timeout=timeout, lazy=True,
-                           pack_encoding=pack_encoding, unpack_encoding=unpack_encoding, tcp_no_delay=False)
+        RPCClient.__init__(
+            self, host, port, timeout=timeout, lazy=True,
+            pack_encoding=pack_encoding, unpack_encoding=unpack_encoding,
+            pack_params=pack_params, unpack_params=unpack_params,
+            tcp_no_delay=False)
 
     def is_expired(self):
         """Returns whether the connection has been expired.

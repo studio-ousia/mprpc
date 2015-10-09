@@ -122,7 +122,7 @@ cdef class RPCClient:
                 raise IOError('Connection closed')
             unpacker.feed(data)
             try:
-                response = unpacker.next()
+                response = next(unpacker)
                 break
             except StopIteration:
                 continue

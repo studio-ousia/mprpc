@@ -75,8 +75,8 @@ class TestRPC(object):
 
         try:
             ret = client.call('raise_error')
-        except RPCError, e:
-            eq_('error msg', e.message)
+        except RPCError as e:
+            eq_('error msg', str(e))
             raise
 
         eq_('message', ret)

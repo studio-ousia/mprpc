@@ -69,14 +69,17 @@ cdef class RPCClient:
         assert self._socket is None, 'The connection has already been established'
 
         logging.debug('openning a msgpackrpc connection')
-        self._socket = socket.create_connection((self._host, self._port))
+
+        if self._timeout:
+            self._socket = socket.create_connection((self._host, self._port),
+                                                    self._timeout)
+        else:
+            # use the default timeout value
+            self._socket = socket.create_connection((self._host, self._port))
 
         # set TCP NODELAY
         if self._tcp_no_delay:
             self._socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-
-        if self._timeout:
-            self._socket.settimeout(self._timeout)
 
     def close(self):
         """Closes the connection."""

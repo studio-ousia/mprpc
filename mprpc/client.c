@@ -851,9 +851,9 @@ static char __pyx_k_MSGPACKRPC_RESPONSE[] = "MSGPACKRPC_RESPONSE";
 static char __pyx_k_RPCPoolClient___init[] = "RPCPoolClient.__init__";
 static char __pyx_k_gsocketpool_connection[] = "gsocketpool.connection";
 static char __pyx_k_RPCPoolClient_is_expired[] = "RPCPoolClient.is_expired";
+static char __pyx_k_Users_ikuya_dev_projects_mprpc[] = "/Users/ikuya/dev/projects/mprpc/mprpc/client.pyx";
 static char __pyx_k_Closing_a_msgpackrpc_connection[] = "Closing a msgpackrpc connection";
 static char __pyx_k_The_connection_has_already_been[] = "The connection has already been established";
-static char __pyx_k_mnt_shared_common_Code_forks_mp[] = "/mnt/shared/common/Code/forks/mprpc/mprpc/client.pyx";
 static char __pyx_k_An_error_has_occurred_while_clos[] = "An error has occurred while closing the socket";
 static char __pyx_k_Attempt_to_close_an_unopened_soc[] = "Attempt to close an unopened socket";
 static char __pyx_k_Lifetime_must_be_a_positive_valu[] = "Lifetime must be a positive value";
@@ -883,6 +883,7 @@ static PyObject *__pyx_n_s_StopIteration;
 static PyObject *__pyx_n_s_TCP_NODELAY;
 static PyObject *__pyx_kp_s_The_connection_has_already_been;
 static PyObject *__pyx_n_s_Unpacker;
+static PyObject *__pyx_kp_s_Users_ikuya_dev_projects_mprpc;
 static PyObject *__pyx_kp_s_Wrapper_class_of_class_RPCClient;
 static PyObject *__pyx_n_s_args;
 static PyObject *__pyx_n_s_call;
@@ -909,7 +910,6 @@ static PyObject *__pyx_n_s_logging;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_metaclass;
 static PyObject *__pyx_n_s_method;
-static PyObject *__pyx_kp_s_mnt_shared_common_Code_forks_mp;
 static PyObject *__pyx_n_s_module;
 static PyObject *__pyx_n_s_mprpc_client;
 static PyObject *__pyx_n_s_msgpack;
@@ -3946,6 +3946,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TCP_NODELAY, __pyx_k_TCP_NODELAY, sizeof(__pyx_k_TCP_NODELAY), 0, 0, 1, 1},
   {&__pyx_kp_s_The_connection_has_already_been, __pyx_k_The_connection_has_already_been, sizeof(__pyx_k_The_connection_has_already_been), 0, 0, 1, 0},
   {&__pyx_n_s_Unpacker, __pyx_k_Unpacker, sizeof(__pyx_k_Unpacker), 0, 0, 1, 1},
+  {&__pyx_kp_s_Users_ikuya_dev_projects_mprpc, __pyx_k_Users_ikuya_dev_projects_mprpc, sizeof(__pyx_k_Users_ikuya_dev_projects_mprpc), 0, 0, 1, 0},
   {&__pyx_kp_s_Wrapper_class_of_class_RPCClient, __pyx_k_Wrapper_class_of_class_RPCClient, sizeof(__pyx_k_Wrapper_class_of_class_RPCClient), 0, 0, 1, 0},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
   {&__pyx_n_s_call, __pyx_k_call, sizeof(__pyx_k_call), 0, 0, 1, 1},
@@ -3972,7 +3973,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
   {&__pyx_n_s_method, __pyx_k_method, sizeof(__pyx_k_method), 0, 0, 1, 1},
-  {&__pyx_kp_s_mnt_shared_common_Code_forks_mp, __pyx_k_mnt_shared_common_Code_forks_mp, sizeof(__pyx_k_mnt_shared_common_Code_forks_mp), 0, 0, 1, 0},
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
   {&__pyx_n_s_mprpc_client, __pyx_k_mprpc_client, sizeof(__pyx_k_mprpc_client), 0, 0, 1, 1},
   {&__pyx_n_s_msgpack, __pyx_k_msgpack, sizeof(__pyx_k_msgpack), 0, 0, 1, 1},
@@ -4089,7 +4089,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__9 = PyTuple_Pack(10, __pyx_n_s_self, __pyx_n_s_host, __pyx_n_s_port, __pyx_n_s_timeout, __pyx_n_s_lifetime, __pyx_n_s_pack_encoding, __pyx_n_s_unpack_encoding, __pyx_n_s_pack_params, __pyx_n_s_unpack_params, __pyx_n_s_tcp_no_delay); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(10, 0, 10, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mnt_shared_common_Code_forks_mp, __pyx_n_s_init, 185, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(10, 0, 10, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_ikuya_dev_projects_mprpc, __pyx_n_s_init, 185, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "mprpc/client.pyx":202
  *             tcp_no_delay=False)
@@ -4101,7 +4101,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__11 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mnt_shared_common_Code_forks_mp, __pyx_n_s_is_expired, 202, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_ikuya_dev_projects_mprpc, __pyx_n_s_is_expired, 202, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "mprpc/client.pyx":214
  *             return False
@@ -4113,7 +4113,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__13 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_method, __pyx_n_s_args); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_VARARGS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mnt_shared_common_Code_forks_mp, __pyx_n_s_call, 214, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_VARARGS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_ikuya_dev_projects_mprpc, __pyx_n_s_call, 214, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;

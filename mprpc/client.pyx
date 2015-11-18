@@ -70,8 +70,12 @@ cdef class RPCClient:
 
         logging.debug('openning a msgpackrpc connection')
 
-        self._socket = socket.create_connection((self._host, self._port),
-                                                self._timeout)
+        if self._timeout:
+            self._socket = socket.create_connection((self._host, self._port),
+                                                    self._timeout)
+        else:
+            # use the default timeout value
+            self._socket = socket.create_connection((self._host, self._port))
 
         # set TCP NODELAY
         if self._tcp_no_delay:

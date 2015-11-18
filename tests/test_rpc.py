@@ -43,7 +43,7 @@ class TestRPC(object):
 
         ok_(client.is_connected())
 
-        mock_socket.create_connection.assert_called_once_with((HOST, PORT), None)
+        mock_socket.create_connection.assert_called_once_with((HOST, PORT))
 
         client.close()
 

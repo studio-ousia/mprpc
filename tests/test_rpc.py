@@ -69,6 +69,15 @@ class TestRPC(object):
         ret = client.call('echo', 'message' * 100)
         eq_('message' * 100, ret)
 
+    def test_call_with_keyword_args(self):
+        client = RPCClient(HOST, PORT)
+
+        ret = client.call('echo', msg='message')
+        eq_('message', ret)
+
+        ret = client.call('echo', msg='message' * 100)
+        eq_('message' * 100, ret)
+
     @raises(RPCError)
     def test_call_server_side_exception(self):
         client = RPCClient(HOST, PORT)

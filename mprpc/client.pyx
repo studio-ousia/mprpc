@@ -105,14 +105,15 @@ cdef class RPCClient:
         else:
             return False
 
-    def call(self, str method, *args):
+    def call(self, str method, *args, **kwargs):
         """Calls a RPC method.
 
         :param str method: Method name.
         :param args: Method arguments.
+        :param kwargs: Method keyword arguments.
         """
 
-        cdef bytes req = self._create_request(method, args)
+        cdef bytes req = self._create_request(method, args, tuple(kwargs.items()))
 
         cdef bytes data
         self._socket.sendall(req)
@@ -132,11 +133,11 @@ cdef class RPCClient:
 
         return self._parse_response(response)
 
-    cdef bytes _create_request(self, method, tuple args):
+    cdef bytes _create_request(self, method, tuple args, tuple kwargs):
         self._msg_id += 1
 
         cdef tuple req
-        req = (MSGPACKRPC_REQUEST, self._msg_id, method, args)
+        req = (MSGPACKRPC_REQUEST, self._msg_id, method, args, kwargs)
 
         return self._packer.pack(req)
 

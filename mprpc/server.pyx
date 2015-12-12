@@ -77,10 +77,10 @@ cdef class RPCServer:
             except StopIteration:
                 continue
 
-            (msg_id, method, args) = self._parse_request(req)
+            (msg_id, method, args, kwargs) = self._parse_request(req)
 
             try:
-                ret = method(*args)
+                ret = method(*args, **kwargs)
 
             except Exception, e:
                 self._send_error(str(e), msg_id, conn)
@@ -89,13 +89,13 @@ cdef class RPCServer:
                 self._send_result(ret, msg_id, conn)
 
     cdef tuple _parse_request(self, tuple req):
-        if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
+        if (len(req) != 5 or req[0] != MSGPACKRPC_REQUEST):
             raise RPCProtocolError('Invalid protocol')
 
         cdef tuple args
         cdef int msg_id
 
-        (_, msg_id, method_name, args) = req
+        (_, msg_id, method_name, args, kwargs) = req
 
         if method_name.startswith('_'):
             raise MethodNotFoundError('Method not found: %s', method_name)
@@ -107,7 +107,7 @@ cdef class RPCServer:
         if not hasattr(method, '__call__'):
             raise MethodNotFoundError('Method is not callable: %s', method_name)
 
-        return (msg_id, method, args)
+        return (msg_id, method, args, dict(kwargs))
 
     cdef _send_result(self, object result, int msg_id, _RPCConnection conn):
         msg = (MSGPACKRPC_RESPONSE, msg_id, None, result)

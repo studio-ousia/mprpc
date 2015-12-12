@@ -1451,6 +1451,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
   int __pyx_v_msg_id;
   PyObject *__pyx_v_unpacker = NULL;
   PyObject *__pyx_v_method = NULL;
+  PyObject *__pyx_v_kwargs = NULL;
   PyObject *__pyx_v_ret = NULL;
   PyObject *__pyx_v_e = NULL;
   PyObject *__pyx_r = NULL;
@@ -1672,7 +1673,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
  *             except StopIteration:
  *                 continue             # <<<<<<<<<<<<<<
  * 
- *             (msg_id, method, args) = self._parse_request(req)
+ *             (msg_id, method, args, kwargs) = self._parse_request(req)
  */
         goto __pyx_L15_except_continue;
         __pyx_L15_except_continue:;
@@ -1708,7 +1709,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
     /* "mprpc/server.pyx":80
  *                 continue
  * 
- *             (msg_id, method, args) = self._parse_request(req)             # <<<<<<<<<<<<<<
+ *             (msg_id, method, args, kwargs) = self._parse_request(req)             # <<<<<<<<<<<<<<
  * 
  *             try:
  */
@@ -1721,8 +1722,8 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
       #else
       Py_ssize_t size = PySequence_Size(sequence);
       #endif
-      if (unlikely(size != 3)) {
-        if (size > 3) __Pyx_RaiseTooManyValuesError(3);
+      if (unlikely(size != 4)) {
+        if (size > 4) __Pyx_RaiseTooManyValuesError(4);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
         {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
@@ -1730,16 +1731,21 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
       __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
       __pyx_t_2 = PyTuple_GET_ITEM(sequence, 2); 
+      __pyx_t_11 = PyTuple_GET_ITEM(sequence, 3); 
       __Pyx_INCREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_11);
       #else
-      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_2 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_2);
+      {
+        Py_ssize_t i;
+        PyObject** temps[4] = {&__pyx_t_1,&__pyx_t_3,&__pyx_t_2,&__pyx_t_11};
+        for (i=0; i < 4; i++) {
+          PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __Pyx_GOTREF(item);
+          *(temps[i]) = item;
+        }
+      }
       #endif
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
@@ -1753,12 +1759,14 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
     __pyx_t_3 = 0;
     __Pyx_XDECREF_SET(__pyx_v_args, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_kwargs, __pyx_t_11);
+    __pyx_t_11 = 0;
 
     /* "mprpc/server.pyx":82
- *             (msg_id, method, args) = self._parse_request(req)
+ *             (msg_id, method, args, kwargs) = self._parse_request(req)
  * 
  *             try:             # <<<<<<<<<<<<<<
- *                 ret = method(*args)
+ *                 ret = method(*args, **kwargs)
  * 
  */
     {
@@ -1771,7 +1779,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
         /* "mprpc/server.pyx":83
  * 
  *             try:
- *                 ret = method(*args)             # <<<<<<<<<<<<<<
+ *                 ret = method(*args, **kwargs)             # <<<<<<<<<<<<<<
  * 
  *             except Exception, e:
  */
@@ -1779,16 +1787,28 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
           {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L16_error;}
         }
-        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_v_method, __pyx_v_args, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L16_error;}
-        __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_XDECREF_SET(__pyx_v_ret, __pyx_t_7);
-        __pyx_t_7 = 0;
+        if (unlikely(__pyx_v_kwargs == Py_None)) {
+          PyErr_SetString(PyExc_TypeError, "argument after ** must be a mapping, not NoneType");
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L16_error;}
+        }
+        if (likely(PyDict_CheckExact(__pyx_v_kwargs))) {
+          __pyx_t_7 = PyDict_Copy(__pyx_v_kwargs); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L16_error;}
+          __Pyx_GOTREF(__pyx_t_7);
+        } else {
+          __pyx_t_7 = PyObject_CallFunctionObjArgs((PyObject*)&PyDict_Type, __pyx_v_kwargs, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L16_error;}
+          __Pyx_GOTREF(__pyx_t_7);
+        }
+        __pyx_t_11 = __Pyx_PyObject_Call(__pyx_v_method, __pyx_v_args, __pyx_t_7); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L16_error;}
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_XDECREF_SET(__pyx_v_ret, __pyx_t_11);
+        __pyx_t_11 = 0;
 
         /* "mprpc/server.pyx":82
- *             (msg_id, method, args) = self._parse_request(req)
+ *             (msg_id, method, args, kwargs) = self._parse_request(req)
  * 
  *             try:             # <<<<<<<<<<<<<<
- *                 ret = method(*args)
+ *                 ret = method(*args, **kwargs)
  * 
  */
       }
@@ -1801,9 +1821,9 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
  *     cdef tuple _parse_request(self, tuple req):
  */
       /*else:*/ {
-        __pyx_t_7 = ((struct __pyx_vtabstruct_5mprpc_6server_RPCServer *)__pyx_v_self->__pyx_vtab)->_send_result(__pyx_v_self, __pyx_v_ret, __pyx_v_msg_id, __pyx_v_conn); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
-        __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_11 = ((struct __pyx_vtabstruct_5mprpc_6server_RPCServer *)__pyx_v_self->__pyx_vtab)->_send_result(__pyx_v_self, __pyx_v_ret, __pyx_v_msg_id, __pyx_v_conn); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       }
       __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -1814,9 +1834,10 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
 
       /* "mprpc/server.pyx":85
- *                 ret = method(*args)
+ *                 ret = method(*args, **kwargs)
  * 
  *             except Exception, e:             # <<<<<<<<<<<<<<
  *                 self._send_error(str(e), msg_id, conn)
@@ -1825,12 +1846,12 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
       __pyx_t_4 = PyErr_ExceptionMatches(__pyx_builtin_Exception);
       if (__pyx_t_4) {
         __Pyx_AddTraceback("mprpc.server.RPCServer._run", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_7, &__pyx_t_2, &__pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
+        if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_7, &__pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
+        __Pyx_GOTREF(__pyx_t_11);
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_2);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_7);
 
         /* "mprpc/server.pyx":86
  * 
@@ -1839,32 +1860,32 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
  * 
  *             else:
  */
-        __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
-        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
+        __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_v_e);
         __Pyx_GIVEREF(__pyx_v_e);
-        PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_e);
-        __pyx_t_11 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
-        __Pyx_GOTREF(__pyx_t_11);
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        if (!(likely(PyString_CheckExact(__pyx_t_11))||((__pyx_t_11) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_11)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
-        __pyx_t_1 = ((struct __pyx_vtabstruct_5mprpc_6server_RPCServer *)__pyx_v_self->__pyx_vtab)->_send_error(__pyx_v_self, ((PyObject*)__pyx_t_11), __pyx_v_msg_id, __pyx_v_conn); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
+        PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_e);
+        __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
         __Pyx_GOTREF(__pyx_t_1);
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
+        __pyx_t_3 = ((struct __pyx_vtabstruct_5mprpc_6server_RPCServer *)__pyx_v_self->__pyx_vtab)->_send_error(__pyx_v_self, ((PyObject*)__pyx_t_1), __pyx_v_msg_id, __pyx_v_conn); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L18_except_error;}
+        __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         goto __pyx_L17_exception_handled;
       }
       goto __pyx_L18_except_error;
       __pyx_L18_except_error:;
 
       /* "mprpc/server.pyx":82
- *             (msg_id, method, args) = self._parse_request(req)
+ *             (msg_id, method, args, kwargs) = self._parse_request(req)
  * 
  *             try:             # <<<<<<<<<<<<<<
- *                 ret = method(*args)
+ *                 ret = method(*args, **kwargs)
  * 
  */
       __Pyx_XGIVEREF(__pyx_t_10);
@@ -1908,6 +1929,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
   __Pyx_XDECREF(__pyx_v_args);
   __Pyx_XDECREF(__pyx_v_unpacker);
   __Pyx_XDECREF(__pyx_v_method);
+  __Pyx_XDECREF(__pyx_v_kwargs);
   __Pyx_XDECREF(__pyx_v_ret);
   __Pyx_XDECREF(__pyx_v_e);
   __Pyx_XGIVEREF(__pyx_r);
@@ -1919,7 +1941,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
  *                 self._send_result(ret, msg_id, conn)
  * 
  *     cdef tuple _parse_request(self, tuple req):             # <<<<<<<<<<<<<<
- *         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
+ *         if (len(req) != 5 or req[0] != MSGPACKRPC_REQUEST):
  *             raise RPCProtocolError('Invalid protocol')
  */
 
@@ -1928,6 +1950,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
   int __pyx_v_msg_id;
   CYTHON_UNUSED PyObject *__pyx_v__ = NULL;
   PyObject *__pyx_v_method_name = NULL;
+  PyObject *__pyx_v_kwargs = NULL;
   PyObject *__pyx_v_method = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -1938,7 +1961,8 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
+  PyObject *__pyx_t_8 = NULL;
+  int __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1947,7 +1971,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
   /* "mprpc/server.pyx":92
  * 
  *     cdef tuple _parse_request(self, tuple req):
- *         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):             # <<<<<<<<<<<<<<
+ *         if (len(req) != 5 or req[0] != MSGPACKRPC_REQUEST):             # <<<<<<<<<<<<<<
  *             raise RPCProtocolError('Invalid protocol')
  * 
  */
@@ -1956,7 +1980,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_t_2 = PyTuple_GET_SIZE(__pyx_v_req); if (unlikely(__pyx_t_2 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_3 = ((__pyx_t_2 != 4) != 0);
+  __pyx_t_3 = ((__pyx_t_2 != 5) != 0);
   if (!__pyx_t_3) {
   } else {
     __pyx_t_1 = __pyx_t_3;
@@ -1981,7 +2005,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
 
     /* "mprpc/server.pyx":93
  *     cdef tuple _parse_request(self, tuple req):
- *         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
+ *         if (len(req) != 5 or req[0] != MSGPACKRPC_REQUEST):
  *             raise RPCProtocolError('Invalid protocol')             # <<<<<<<<<<<<<<
  * 
  *         cdef tuple args
@@ -1998,7 +2022,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
     /* "mprpc/server.pyx":92
  * 
  *     cdef tuple _parse_request(self, tuple req):
- *         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):             # <<<<<<<<<<<<<<
+ *         if (len(req) != 5 or req[0] != MSGPACKRPC_REQUEST):             # <<<<<<<<<<<<<<
  *             raise RPCProtocolError('Invalid protocol')
  * 
  */
@@ -2007,7 +2031,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
   /* "mprpc/server.pyx":98
  *         cdef int msg_id
  * 
- *         (_, msg_id, method_name, args) = req             # <<<<<<<<<<<<<<
+ *         (_, msg_id, method_name, args, kwargs) = req             # <<<<<<<<<<<<<<
  * 
  *         if method_name.startswith('_'):
  */
@@ -2018,8 +2042,8 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
     #else
     Py_ssize_t size = PySequence_Size(sequence);
     #endif
-    if (unlikely(size != 4)) {
-      if (size > 4) __Pyx_RaiseTooManyValuesError(4);
+    if (unlikely(size != 5)) {
+      if (size > 5) __Pyx_RaiseTooManyValuesError(5);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
@@ -2028,15 +2052,17 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
     __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1); 
     __pyx_t_4 = PyTuple_GET_ITEM(sequence, 2); 
     __pyx_t_7 = PyTuple_GET_ITEM(sequence, 3); 
+    __pyx_t_8 = PyTuple_GET_ITEM(sequence, 4); 
     __Pyx_INCREF(__pyx_t_5);
     __Pyx_INCREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     #else
     {
       Py_ssize_t i;
-      PyObject** temps[4] = {&__pyx_t_5,&__pyx_t_6,&__pyx_t_4,&__pyx_t_7};
-      for (i=0; i < 4; i++) {
+      PyObject** temps[5] = {&__pyx_t_5,&__pyx_t_6,&__pyx_t_4,&__pyx_t_7,&__pyx_t_8};
+      for (i=0; i < 5; i++) {
         PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(item);
         *(temps[i]) = item;
@@ -2046,31 +2072,33 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
   } else {
     __Pyx_RaiseNoneNotIterableError(); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_6); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_6); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (!(likely(PyTuple_CheckExact(__pyx_t_7))||((__pyx_t_7) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_7)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v__ = __pyx_t_5;
   __pyx_t_5 = 0;
-  __pyx_v_msg_id = __pyx_t_8;
+  __pyx_v_msg_id = __pyx_t_9;
   __pyx_v_method_name = __pyx_t_4;
   __pyx_t_4 = 0;
   __pyx_v_args = ((PyObject*)__pyx_t_7);
   __pyx_t_7 = 0;
+  __pyx_v_kwargs = __pyx_t_8;
+  __pyx_t_8 = 0;
 
   /* "mprpc/server.pyx":100
- *         (_, msg_id, method_name, args) = req
+ *         (_, msg_id, method_name, args, kwargs) = req
  * 
  *         if method_name.startswith('_'):             # <<<<<<<<<<<<<<
  *             raise MethodNotFoundError('Method not found: %s', method_name)
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_method_name, __pyx_n_s_startswith); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_method_name, __pyx_n_s_startswith); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_1) {
 
     /* "mprpc/server.pyx":101
@@ -2080,41 +2108,41 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
  * 
  *         if not hasattr(self, method_name):
  */
-    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_MethodNotFoundError); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = NULL;
+    __pyx_t_8 = __Pyx_GetModuleGlobalName(__pyx_n_s_MethodNotFoundError); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_4 = NULL;
     __pyx_t_2 = 0;
-    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_7))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_7);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-        __Pyx_INCREF(__pyx_t_6);
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_8))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_8);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+        __Pyx_INCREF(__pyx_t_4);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_7, function);
+        __Pyx_DECREF_SET(__pyx_t_8, function);
         __pyx_t_2 = 1;
       }
     }
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__pyx_t_6) {
-      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    if (__pyx_t_4) {
+      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
     }
     __Pyx_INCREF(__pyx_kp_s_Method_not_found_s);
     __Pyx_GIVEREF(__pyx_kp_s_Method_not_found_s);
-    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_2, __pyx_kp_s_Method_not_found_s);
+    PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_2, __pyx_kp_s_Method_not_found_s);
     __Pyx_INCREF(__pyx_v_method_name);
     __Pyx_GIVEREF(__pyx_v_method_name);
-    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_2, __pyx_v_method_name);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_2, __pyx_v_method_name);
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_Raise(__pyx_t_7, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
     /* "mprpc/server.pyx":100
- *         (_, msg_id, method_name, args) = req
+ *         (_, msg_id, method_name, args, kwargs) = req
  * 
  *         if method_name.startswith('_'):             # <<<<<<<<<<<<<<
  *             raise MethodNotFoundError('Method not found: %s', method_name)
@@ -2140,37 +2168,37 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
  * 
  *         method = getattr(self, method_name)
  */
-    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_MethodNotFoundError); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = NULL;
+    __pyx_t_8 = __Pyx_GetModuleGlobalName(__pyx_n_s_MethodNotFoundError); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_6 = NULL;
     __pyx_t_2 = 0;
-    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_7))) {
-      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_7);
-      if (likely(__pyx_t_5)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-        __Pyx_INCREF(__pyx_t_5);
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_8))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_8);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+        __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_7, function);
+        __Pyx_DECREF_SET(__pyx_t_8, function);
         __pyx_t_2 = 1;
       }
     }
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    __pyx_t_4 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    if (__pyx_t_6) {
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6); __pyx_t_6 = NULL;
     }
     __Pyx_INCREF(__pyx_kp_s_Method_not_found_s);
     __Pyx_GIVEREF(__pyx_kp_s_Method_not_found_s);
-    PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_2, __pyx_kp_s_Method_not_found_s);
+    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_2, __pyx_kp_s_Method_not_found_s);
     __Pyx_INCREF(__pyx_v_method_name);
     __Pyx_GIVEREF(__pyx_v_method_name);
-    PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_2, __pyx_v_method_name);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_6, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
+    PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_2, __pyx_v_method_name);
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_Raise(__pyx_t_7, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
     /* "mprpc/server.pyx":103
@@ -2189,10 +2217,10 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
  *         if not hasattr(method, '__call__'):
  *             raise MethodNotFoundError('Method is not callable: %s', method_name)
  */
-  __pyx_t_4 = __Pyx_GetAttr(((PyObject *)__pyx_v_self), __pyx_v_method_name); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_v_method = __pyx_t_4;
-  __pyx_t_4 = 0;
+  __pyx_t_7 = __Pyx_GetAttr(((PyObject *)__pyx_v_self), __pyx_v_method_name); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_v_method = __pyx_t_7;
+  __pyx_t_7 = 0;
 
   /* "mprpc/server.pyx":107
  * 
@@ -2210,39 +2238,39 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
  *         if not hasattr(method, '__call__'):
  *             raise MethodNotFoundError('Method is not callable: %s', method_name)             # <<<<<<<<<<<<<<
  * 
- *         return (msg_id, method, args)
+ *         return (msg_id, method, args, dict(kwargs))
  */
-    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_MethodNotFoundError); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = NULL;
+    __pyx_t_8 = __Pyx_GetModuleGlobalName(__pyx_n_s_MethodNotFoundError); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_4 = NULL;
     __pyx_t_2 = 0;
-    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_7))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_7);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-        __Pyx_INCREF(__pyx_t_6);
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_8))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_8);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+        __Pyx_INCREF(__pyx_t_4);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_7, function);
+        __Pyx_DECREF_SET(__pyx_t_8, function);
         __pyx_t_2 = 1;
       }
     }
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__pyx_t_6) {
-      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    if (__pyx_t_4) {
+      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
     }
     __Pyx_INCREF(__pyx_kp_s_Method_is_not_callable_s);
     __Pyx_GIVEREF(__pyx_kp_s_Method_is_not_callable_s);
-    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_2, __pyx_kp_s_Method_is_not_callable_s);
+    PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_2, __pyx_kp_s_Method_is_not_callable_s);
     __Pyx_INCREF(__pyx_v_method_name);
     __Pyx_GIVEREF(__pyx_v_method_name);
-    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_2, __pyx_v_method_name);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_2, __pyx_v_method_name);
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_Raise(__pyx_t_7, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
     /* "mprpc/server.pyx":107
@@ -2257,33 +2285,44 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
   /* "mprpc/server.pyx":110
  *             raise MethodNotFoundError('Method is not callable: %s', method_name)
  * 
- *         return (msg_id, method, args)             # <<<<<<<<<<<<<<
+ *         return (msg_id, method, args, dict(kwargs))             # <<<<<<<<<<<<<<
  * 
  *     cdef _send_result(self, object result, int msg_id, _RPCConnection conn):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_msg_id); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_msg_id); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
+  __pyx_t_8 = PyTuple_New(1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_INCREF(__pyx_v_kwargs);
+  __Pyx_GIVEREF(__pyx_v_kwargs);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_v_kwargs);
+  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)(&PyDict_Type)), __pyx_t_8, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_8 = PyTuple_New(4); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_GIVEREF(__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7);
   __Pyx_INCREF(__pyx_v_method);
   __Pyx_GIVEREF(__pyx_v_method);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_method);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_v_method);
   __Pyx_INCREF(__pyx_v_args);
   __Pyx_GIVEREF(__pyx_v_args);
-  PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_args);
-  __pyx_t_4 = 0;
-  __pyx_r = ((PyObject*)__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_8, 2, __pyx_v_args);
+  __Pyx_GIVEREF(__pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_8, 3, __pyx_t_6);
   __pyx_t_7 = 0;
+  __pyx_t_6 = 0;
+  __pyx_r = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "mprpc/server.pyx":91
  *                 self._send_result(ret, msg_id, conn)
  * 
  *     cdef tuple _parse_request(self, tuple req):             # <<<<<<<<<<<<<<
- *         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
+ *         if (len(req) != 5 or req[0] != MSGPACKRPC_REQUEST):
  *             raise RPCProtocolError('Invalid protocol')
  */
 
@@ -2293,12 +2332,14 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("mprpc.server.RPCServer._parse_request", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_args);
   __Pyx_XDECREF(__pyx_v__);
   __Pyx_XDECREF(__pyx_v_method_name);
+  __Pyx_XDECREF(__pyx_v_kwargs);
   __Pyx_XDECREF(__pyx_v_method);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -2306,7 +2347,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__parse_request(struct __pyx_o
 }
 
 /* "mprpc/server.pyx":112
- *         return (msg_id, method, args)
+ *         return (msg_id, method, args, dict(kwargs))
  * 
  *     cdef _send_result(self, object result, int msg_id, _RPCConnection conn):             # <<<<<<<<<<<<<<
  *         msg = (MSGPACKRPC_RESPONSE, msg_id, None, result)
@@ -2395,7 +2436,7 @@ static PyObject *__pyx_f_5mprpc_6server_9RPCServer__send_result(struct __pyx_obj
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "mprpc/server.pyx":112
- *         return (msg_id, method, args)
+ *         return (msg_id, method, args, dict(kwargs))
  * 
  *     cdef _send_result(self, object result, int msg_id, _RPCConnection conn):             # <<<<<<<<<<<<<<
  *         msg = (MSGPACKRPC_RESPONSE, msg_id, None, result)
@@ -3485,7 +3526,7 @@ static int __Pyx_InitCachedConstants(void) {
 
   /* "mprpc/server.pyx":93
  *     cdef tuple _parse_request(self, tuple req):
- *         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
+ *         if (len(req) != 5 or req[0] != MSGPACKRPC_REQUEST):
  *             raise RPCProtocolError('Invalid protocol')             # <<<<<<<<<<<<<<
  * 
  *         cdef tuple args
@@ -3495,7 +3536,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__5);
 
   /* "mprpc/server.pyx":100
- *         (_, msg_id, method_name, args) = req
+ *         (_, msg_id, method_name, args, kwargs) = req
  * 
  *         if method_name.startswith('_'):             # <<<<<<<<<<<<<<
  *             raise MethodNotFoundError('Method not found: %s', method_name)

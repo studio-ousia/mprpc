@@ -35,7 +35,8 @@ cdef class RPCClient:
     """
 
     cdef str _host
-    cdef int _port
+    cdef _port
+    cdef str _unix_socket_path
     cdef int _msg_id
     cdef _timeout
     cdef _socket
@@ -44,13 +45,16 @@ cdef class RPCClient:
     cdef _unpack_params
     cdef _tcp_no_delay
 
-    def __init__(self, host, port, timeout=None, lazy=False,
+    def __init__(self, host=None, port=None, unix_socket_path=None, timeout=None, lazy=False,
                  pack_encoding='utf-8', unpack_encoding='utf-8',
                  pack_params=dict(), unpack_params=dict(use_list=False),
                  tcp_no_delay=False):
         self._host = host
         self._port = port
+        self._unix_socket_path = unix_socket_path
         self._timeout = timeout
+
+        assert all((host, port)) or unix_socket_path, 'You must provide either host and port or unix_socket_path'
 
         self._msg_id = 0
         self._socket = None
@@ -63,6 +67,27 @@ cdef class RPCClient:
         if not lazy:
             self.open()
 
+    def _create_unix_socket_connection(self):
+        """Creates connection to a unix domain socket."""
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        if self._timeout:
+            sock.settimeout(self._timeout)
+        sock.connect(self._unix_socket_path)
+        return sock
+
+    def _create_tcp_connection(self):
+        """Creates a tcp connection, set TCP NODELAY."""
+        if self._timeout:
+            sock = socket.create_connection((self._host, self._port),
+                                                    self._timeout)
+        else:
+            # use the default timeout value
+            sock = socket.create_connection((self._host, self._port))
+        # set TCP NODELAY
+        if self._tcp_no_delay:
+            self._socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        return sock
+
     def open(self):
         """Opens a connection."""
 
@@ -70,16 +95,10 @@ cdef class RPCClient:
 
         logging.debug('openning a msgpackrpc connection')
 
-        if self._timeout:
-            self._socket = socket.create_connection((self._host, self._port),
-                                                    self._timeout)
+        if self._unix_socket_path:
+            self._socket = self._create_unix_socket_connection()
         else:
-            # use the default timeout value
-            self._socket = socket.create_connection((self._host, self._port))
-
-        # set TCP NODELAY
-        if self._tcp_no_delay:
-            self._socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            self._socket = self._create_tcp_connection()
 
     def close(self):
         """Closes the connection."""

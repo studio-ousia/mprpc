@@ -3,7 +3,6 @@
 
 import gevent.socket
 import msgpack
-from gevent.coros import Semaphore
 
 from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 from exceptions import MethodNotFoundError, RPCProtocolError
@@ -111,22 +110,15 @@ cdef class RPCServer:
 
 cdef class _RPCConnection:
     cdef _socket
-    cdef _send_lock
 
     def __init__(self, socket):
         self._socket = socket
-        self._send_lock = Semaphore()
 
     cdef recv(self, int buf_size):
         return self._socket.recv(buf_size)
 
     cdef send(self, str msg):
-        self._send_lock.acquire()
-        try:
-            self._socket.sendall(msg)
-
-        finally:
-            self._send_lock.release()
+        self._socket.sendall(msg)
 
     def __del__(self):
         try:

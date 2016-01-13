@@ -4,7 +4,7 @@ from setuptools import setup, Extension, find_packages
 
 setup(
     name='mprpc',
-    version='0.1.4',
+    version='0.1.8',
     description='A fast MessagePack RPC library',
     long_description=open('README.rst').read(),
     author='Studio Ousia',
@@ -27,6 +27,9 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ),
     install_requires=[
         'gsocketpool',

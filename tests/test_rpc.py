@@ -57,7 +57,7 @@ class TestRPC(object):
 
         client = RPCClient(HOST, PORT, timeout=5.0)
 
-        mock_socket_ins.settimeout.assert_called_once_with(5.0)
+        mock_socket.create_connection.assert_called_once_with((HOST, PORT), 5.0)
         ok_(client.is_connected())
 
     def test_call(self):
@@ -75,8 +75,8 @@ class TestRPC(object):
 
         try:
             ret = client.call('raise_error')
-        except RPCError, e:
-            eq_('error msg', e.message)
+        except RPCError as e:
+            eq_('error msg', str(e))
             raise
 
         eq_('message', ret)

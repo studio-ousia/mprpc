@@ -29,6 +29,9 @@ cdef class RPCClient:
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack.
+    :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
+    :param dict unpack_params: (optional) Parameters to pass to Messagepack
+        Unpacker
     """
 
     cdef str _host
@@ -37,10 +40,14 @@ cdef class RPCClient:
     cdef _timeout
     cdef _socket
     cdef _packer
-    cdef _unpacker
+    cdef _unpack_encoding
+    cdef _unpack_params
+    cdef _tcp_no_delay
 
     def __init__(self, host, port, timeout=None, lazy=False,
-                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False):
+                 pack_encoding='utf-8', unpack_encoding='utf-8',
+                 pack_params=dict(), unpack_params=dict(use_list=False),
+                 tcp_no_delay=False):
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -48,9 +55,10 @@ cdef class RPCClient:
         self._msg_id = 0
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
+        self._unpack_encoding = unpack_encoding
+        self._unpack_params = unpack_params
 
-        self._packer = msgpack.Packer(encoding=pack_encoding)
-        self._unpacker = msgpack.Unpacker(encoding=unpack_encoding, use_list=False)
+        self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 
         if not lazy:
             self.open()
@@ -61,14 +69,17 @@ cdef class RPCClient:
         assert self._socket is None, 'The connection has already been established'
 
         logging.debug('openning a msgpackrpc connection')
-        self._socket = socket.create_connection((self._host, self._port))
+
+        if self._timeout:
+            self._socket = socket.create_connection((self._host, self._port),
+                                                    self._timeout)
+        else:
+            # use the default timeout value
+            self._socket = socket.create_connection((self._host, self._port))
 
         # set TCP NODELAY
         if self._tcp_no_delay:
             self._socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-
-        if self._timeout:
-            self._socket.settimeout(self._timeout)
 
     def close(self):
         """Closes the connection."""
@@ -106,13 +117,15 @@ cdef class RPCClient:
         cdef bytes data
         self._socket.sendall(req)
 
+        unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
+                                    **self._unpack_params)
         while True:
             data = self._socket.recv(SOCKET_RECV_SIZE)
             if not data:
                 raise IOError('Connection closed')
-            self._unpacker.feed(data)
+            unpacker.feed(data)
             try:
-                response = self._unpacker.next()
+                response = next(unpacker)
                 break
             except StopIteration:
                 continue
@@ -152,7 +165,7 @@ class RPCPoolClient(RPCClient, Connection):
         >>> client_pool = gsocketpool.pool.Pool(RPCPoolClient, dict(host='127.0.0.1', port=6000))
         >>> with client_pool.connection() as client:
         ...     print client.call('sum', 1, 2)
-        ... 
+        ...
         3
 
     :param str host: Hostname.
@@ -164,10 +177,15 @@ class RPCPoolClient(RPCClient, Connection):
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
         data using Messagepack.
+    :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
+    :param dict unpack_params: (optional) Parameters to pass to Messagepack
+        Unpacker
     """
 
     def __init__(self, host, port, timeout=None, lifetime=None,
-                 pack_encoding='utf-8', unpack_encoding='utf-8', tcp_no_delay=False):
+                 pack_encoding='utf-8', unpack_encoding='utf-8',
+                 pack_params=dict(), unpack_params=dict(use_list=False),
+                 tcp_no_delay=False):
 
         if lifetime:
             assert lifetime > 0, 'Lifetime must be a positive value'
@@ -175,8 +193,11 @@ class RPCPoolClient(RPCClient, Connection):
         else:
             self._lifetime = None
 
-        RPCClient.__init__(self, host, port, timeout=timeout, lazy=True,
-                           pack_encoding=pack_encoding, unpack_encoding=unpack_encoding, tcp_no_delay=False)
+        RPCClient.__init__(
+            self, host, port, timeout=timeout, lazy=True,
+            pack_encoding=pack_encoding, unpack_encoding=unpack_encoding,
+            pack_params=pack_params, unpack_params=unpack_params,
+            tcp_no_delay=False)
 
     def is_expired(self):
         """Returns whether the connection has been expired.

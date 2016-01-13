@@ -16,7 +16,10 @@ cdef class RPCServer:
     :param str pack_encoding: (optional) Character encoding used to pack data
         using Messagepack.
     :param str unpack_encoding: (optional) Character encoding used to unpack
-        data using Messagepack.
+        data using Messagepack
+    :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
+    :param dict unpack_params: (optional) Parameters to pass to Messagepack
+        Unpacker
 
     Usage:
         >>> from gevent.server import StreamServer
@@ -32,16 +35,20 @@ cdef class RPCServer:
     """
 
     cdef _packer
-    cdef _unpacker
+    cdef _unpack_encoding
+    cdef _unpack_params
+    cdef _tcp_no_delay
 
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
-        unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
+        pack_params = kwargs.pop('pack_params', dict())
+
+        self._unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
+        self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))
+
         self._tcp_no_delay = kwargs.pop('tcp_no_delay', False)
 
-        self._packer = msgpack.Packer(encoding=pack_encoding)
-        self._unpacker = msgpack.Unpacker(encoding=unpack_encoding,
-                                          use_list=False)
+        self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 
         if args and isinstance(args[0], gevent.socket.socket):
             self._run(_RPCConnection(args[0]))
@@ -56,14 +63,16 @@ cdef class RPCServer:
         cdef tuple req, args
         cdef int msg_id
 
+        unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
+                                    **self._unpack_params)
         while True:
             data = conn.recv(SOCKET_RECV_SIZE)
             if not data:
                 break
 
-            self._unpacker.feed(data)
+            unpacker.feed(data)
             try:
-                req = self._unpacker.next()
+                req = next(unpacker)
             except StopIteration:
                 continue
 
@@ -117,7 +126,7 @@ cdef class _RPCConnection:
     cdef recv(self, int buf_size):
         return self._socket.recv(buf_size)
 
-    cdef send(self, str msg):
+    cdef send(self, bytes msg):
         self._socket.sendall(msg)
 
     def __del__(self):

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from client import RPCClient, RPCPoolClient
-from server import RPCServer
+from __future__ import absolute_import
+
+from mprpc.client import RPCClient, RPCPoolClient
+from mprpc.server import RPCServer

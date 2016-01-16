@@ -4,11 +4,11 @@ from setuptools import setup, Extension, find_packages
 
 setup(
     name='mprpc',
-    version='0.1.8',
+    version='0.1.9',
     description='A fast MessagePack RPC library',
     long_description=open('README.rst').read(),
     author='Studio Ousia',
-    author_email='admin@ousia.jp',
+    author_email='ikuya@ousia.jp',
     url='http://github.com/studio-ousia/mprpc',
     packages=find_packages(),
     ext_modules=[

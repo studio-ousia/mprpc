@@ -207,7 +207,7 @@ class RPCPoolClient(RPCClient, Connection):
             self, host, port, timeout=timeout, lazy=True,
             pack_encoding=pack_encoding, unpack_encoding=unpack_encoding,
             pack_params=pack_params, unpack_params=unpack_params,
-            tcp_no_delay=False, keep_alive = keep_alive)
+            tcp_no_delay=tcp_no_delay, keep_alive=keep_alive)
 
     def is_expired(self):
         """Returns whether the connection has been expired.

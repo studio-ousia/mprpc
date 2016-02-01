@@ -134,6 +134,10 @@ cdef class RPCClient:
             except StopIteration:
                 continue
 
+        if type(response) != tuple:
+            logging.debug('Protocol error, received unexpected data: {}'.format(data))
+            raise RPCProtocolError('Invalid protocol')
+
         return self._parse_response(response)
 
     cdef bytes _create_request(self, method, tuple args):
@@ -201,7 +205,7 @@ class RPCPoolClient(RPCClient, Connection):
             self, host, port, timeout=timeout, lazy=True,
             pack_encoding=pack_encoding, unpack_encoding=unpack_encoding,
             pack_params=pack_params, unpack_params=unpack_params,
-            tcp_no_delay=False)
+            tcp_no_delay=tcp_no_delay)
 
     def is_expired(self):
         """Returns whether the connection has been expired.

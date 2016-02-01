@@ -31,6 +31,8 @@ cdef class RPCClient:
         data using Messagepack.
     :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
     :param dict unpack_params: (optional) Parameters to pass to Messagepack
+    :param tcp_no_delay (optional) If set to True, use TCP_NODELAY.
+    :param keep_alive (optional) If set to True, use socket keep alive.
         Unpacker
     """
 
@@ -43,11 +45,12 @@ cdef class RPCClient:
     cdef _unpack_encoding
     cdef _unpack_params
     cdef _tcp_no_delay
+    cdef _keep_alive
 
     def __init__(self, host, port, timeout=None, lazy=False,
                  pack_encoding='utf-8', unpack_encoding='utf-8',
                  pack_params=dict(), unpack_params=dict(use_list=False),
-                 tcp_no_delay=False):
+                 tcp_no_delay=False, keep_alive=False):
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -55,6 +58,7 @@ cdef class RPCClient:
         self._msg_id = 0
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
+        self._keep_alive = keep_alive
         self._unpack_encoding = unpack_encoding
         self._unpack_params = unpack_params
 
@@ -84,6 +88,10 @@ cdef class RPCClient:
         # set TCP NODELAY
         if self._tcp_no_delay:
             self._socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+        # set KEEP_ALIVE
+        if self._keep_alive:
+            self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
     def close(self):
         """Closes the connection."""
@@ -187,13 +195,15 @@ class RPCPoolClient(RPCClient, Connection):
         data using Messagepack.
     :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
     :param dict unpack_params: (optional) Parameters to pass to Messagepack
+    :param tcp_no_delay (optional) If set to True, use TCP_NODELAY.
+    :param keep_alive (optional) If set to True, use socket keep alive.
         Unpacker
     """
 
     def __init__(self, host, port, timeout=None, lifetime=None,
                  pack_encoding='utf-8', unpack_encoding='utf-8',
                  pack_params=dict(), unpack_params=dict(use_list=False),
-                 tcp_no_delay=False):
+                 tcp_no_delay=False, keep_alive=False):
 
         if lifetime:
             assert lifetime > 0, 'Lifetime must be a positive value'
@@ -205,7 +215,7 @@ class RPCPoolClient(RPCClient, Connection):
             self, host, port, timeout=timeout, lazy=True,
             pack_encoding=pack_encoding, unpack_encoding=unpack_encoding,
             pack_params=pack_params, unpack_params=unpack_params,
-            tcp_no_delay=tcp_no_delay)
+            tcp_no_delay=tcp_no_delay, keep_alive=keep_alive)
 
     def is_expired(self):
         """Returns whether the connection has been expired.

@@ -38,6 +38,7 @@ cdef class RPCServer:
     cdef _unpack_encoding
     cdef _unpack_params
     cdef _tcp_no_delay
+    cdef _methods
 
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
@@ -47,6 +48,7 @@ cdef class RPCServer:
         self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))
 
         self._tcp_no_delay = kwargs.pop('tcp_no_delay', False)
+        self._methods = {}
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 
@@ -104,15 +106,20 @@ cdef class RPCServer:
 
         (_, msg_id, method_name, args) = req
 
-        if method_name.startswith('_'):
-            raise MethodNotFoundError('Method not found: %s', method_name)
+        method = self._methods.get(method_name, None)
 
-        if not hasattr(self, method_name):
-            raise MethodNotFoundError('Method not found: %s', method_name)
+        if method is None:
+            if method_name.startswith('_'):
+                raise MethodNotFoundError('Method not found: %s', method_name)
 
-        method = getattr(self, method_name)
-        if not hasattr(method, '__call__'):
-            raise MethodNotFoundError('Method is not callable: %s', method_name)
+            if not hasattr(self, method_name):
+                raise MethodNotFoundError('Method not found: %s', method_name)
+
+            method = getattr(self, method_name)
+            if not hasattr(method, '__call__'):
+                raise MethodNotFoundError('Method is not callable: %s', method_name)
+
+            self._methods[method_name] = method
 
         return (msg_id, method, args)
 

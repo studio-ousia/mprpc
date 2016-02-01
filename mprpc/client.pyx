@@ -31,6 +31,8 @@ cdef class RPCClient:
         data using Messagepack.
     :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
     :param dict unpack_params: (optional) Parameters to pass to Messagepack
+    :param tcp_no_delay (optional) If set to True, use TCP_NODELAY.
+    :param keep_alive (optional) If set to True, use socket keep alive.
         Unpacker
     """
 
@@ -48,7 +50,7 @@ cdef class RPCClient:
     def __init__(self, host, port, timeout=None, lazy=False,
                  pack_encoding='utf-8', unpack_encoding='utf-8',
                  pack_params=dict(), unpack_params=dict(use_list=False),
-                 tcp_no_delay=False, keep_alive = False):
+                 tcp_no_delay=False, keep_alive=False):
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -189,13 +191,15 @@ class RPCPoolClient(RPCClient, Connection):
         data using Messagepack.
     :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
     :param dict unpack_params: (optional) Parameters to pass to Messagepack
+    :param tcp_no_delay (optional) If set to True, use TCP_NODELAY.
+    :param keep_alive (optional) If set to True, use socket keep alive.
         Unpacker
     """
 
     def __init__(self, host, port, timeout=None, lifetime=None,
                  pack_encoding='utf-8', unpack_encoding='utf-8',
                  pack_params=dict(), unpack_params=dict(use_list=False),
-                 tcp_no_delay=False, keep_alive = False):
+                 tcp_no_delay=False, keep_alive=False):
 
         if lifetime:
             assert lifetime > 0, 'Lifetime must be a positive value'

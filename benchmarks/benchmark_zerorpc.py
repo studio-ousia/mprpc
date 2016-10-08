@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import print_function
 import time
 import multiprocessing
+import sys
 
 NUM_CALLS = 10000
 
@@ -25,9 +26,15 @@ def call():
     client.connect("tcp://127.0.0.1:6000")
 
     start = time.time()
-    [client.sum(1, 2) for _ in xrange(NUM_CALLS)]
 
-    print 'call: %d qps' % (NUM_CALLS / (time.time() - start))
+    if sys.version_info < (3,):
+        range = xrange
+    else:
+        import builtins
+        range = builtins.range
+    [client.sum(1, 2) for _ in range(NUM_CALLS)]
+
+    print('call: %d qps' % (NUM_CALLS / (time.time() - start)))
 
 
 if __name__ == '__main__':

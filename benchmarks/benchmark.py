@@ -6,6 +6,12 @@ import multiprocessing
 
 import sys
 
+if sys.version_info < (3,):
+    range = xrange
+else:
+    import builtins
+    range = builtins.range
+
 NUM_CALLS = 10000
 
 
@@ -48,11 +54,6 @@ def call_using_connection_pool():
 
     start = time.time()
 
-    if sys.version_info < (3,):
-        range = xrange
-    else:
-        import builtins
-        range = builtins.range
     [None for _ in glet_pool.imap_unordered(_call, range(NUM_CALLS))]
 
     print('call_using_connection_pool: %d qps' % (NUM_CALLS / (time.time() - start)))

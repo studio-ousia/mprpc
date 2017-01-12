@@ -64,7 +64,7 @@ cdef class RPCClient:
         self._unpack_encoding = unpack_encoding
         self._unpack_params = unpack_params or dict(use_list=False)
 
-        self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
+        self._packer = msgpack.Packer(encoding=pack_encoding, **self._pack_params)
 
         if not lazy:
             self.open()

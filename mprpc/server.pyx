@@ -49,7 +49,7 @@ cdef class RPCServer:
         self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))
 
         self._tcp_no_delay = kwargs.pop('tcp_no_delay', True)
-        self._send_error_traceback = kwargs.pop('send_error_traceback', True)
+        self._send_error_info = kwargs.pop('send_error_info', True)
         self._methods = dict((k, v) for k, v in inspect.getmembers(self, predicate=inspect.ismethod) if k[0] != '_')
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
@@ -103,8 +103,8 @@ cdef class RPCServer:
             method_fn = self._methods.get(method_name)
             if method_fn is None:
                 if hasattr(self, '_error'):
-                    self._error('method_nod_found', method_name=method_name, args=args)
-                self._send_error('method_nod_found', msg_id, conn)
+                    self._error('method_not_found', method_name=method_name, args=args)
+                self._send_error('method_not_found', msg_id, conn)
                 continue
 
             if hasattr(self, '_call'): self._call(method_name, method_fn, args)
@@ -114,10 +114,8 @@ cdef class RPCServer:
             except Exception, e:
                 if hasattr(self, '_error'):
                     self._error('method_fn', method_name=method_name, args=args, e=e)
-                if self._send_error_traceback:
-                    self._send_error(str(e), msg_id, conn)
-                else:
-                    self._send_error('error', msg_id, conn)
+                err_msg = str(e) if self._send_error_info else 'error'
+                self._send_error(err_msg, msg_id, conn)
                 continue
 
             else:

@@ -1,8 +1,9 @@
-# cython: profile=False
+# cython: predicateofile=False
 # -*- coding: utf-8 -*-
 
 import gevent.socket
 import msgpack
+import inspect
 
 from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 from exceptions import MethodNotFoundError, RPCProtocolError
@@ -47,15 +48,15 @@ cdef class RPCServer:
         self._unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
         self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))
 
-        self._tcp_no_delay = kwargs.pop('tcp_no_delay', False)
-        self._methods = {}
+        self._tcp_no_delay = kwargs.pop('tcp_no_delay', True)
+        self._methods = dict((k, v) for k, v in inspect.getmembers(self, predicate=inspect.ismethod) if k[0] != '_')
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 
         if args and isinstance(args[0], gevent.socket.socket):
             self._run(_RPCConnection(args[0]))
 
-    def __call__(self, sock, _):
+    def __call__(self, sock, peername):
         if self._tcp_no_delay:
             sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)
         self._run(_RPCConnection(sock))
@@ -64,6 +65,10 @@ cdef class RPCServer:
         cdef bytes data
         cdef tuple req, args
         cdef int msg_id
+
+        self._connection = conn
+        self._peer = conn.getpeername()
+        if hasattr(self, '_connect'): self._connect()
 
         unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
                                     **self._unpack_params)
@@ -78,50 +83,43 @@ cdef class RPCServer:
             except StopIteration:
                 continue
 
+            except Exception as e:
+                if hasattr(self, '_error'):
+                    self._error('invalid_protocol', data=data)
+                break
+
             if type(req) != tuple:
-                self._send_error("Invalid protocol", -1, conn)
-                # reset unpacker as it might have garbage data
-                unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
-                                    **self._unpack_params)
+                if hasattr(self, '_error'):
+                    self._error('invalid_protocol', data=data)
+                break
+
+            if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
+                if hasattr(self, '_error'):
+                    self._error('invalid_protocol2', req=req)
+                break
+
+            _, msg_id, method_name, args = req
+            method_fn = self._methods.get(method_name)
+            if method_fn is None:
+                if hasattr(self, '_error'):
+                    self._error('method_nod_found', method_name=method_name, args=args)
+                self._send_error('method_nod_found', msg_id, conn)
                 continue
 
-
-            (msg_id, method, args) = self._parse_request(req)
-
+            if hasattr(self, '_call'): self._call(method_name, method_fn, args)
             try:
-                ret = method(*args)
+                ret = method_fn(*args)
 
             except Exception, e:
-                self._send_error(str(e), msg_id, conn)
+                if hasattr(self, '_error'):
+                    self._error('method_fn', method_name=method_name, args=args, e=e)
+                self._send_error('error', msg_id, conn)
+                continue
 
             else:
                 self._send_result(ret, msg_id, conn)
 
-    cdef tuple _parse_request(self, tuple req):
-        if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
-            raise RPCProtocolError('Invalid protocol')
-
-        cdef tuple args
-        cdef int msg_id
-
-        (_, msg_id, method_name, args) = req
-
-        method = self._methods.get(method_name, None)
-
-        if method is None:
-            if method_name.startswith('_'):
-                raise MethodNotFoundError('Method not found: %s', method_name)
-
-            if not hasattr(self, method_name):
-                raise MethodNotFoundError('Method not found: %s', method_name)
-
-            method = getattr(self, method_name)
-            if not hasattr(method, '__call__'):
-                raise MethodNotFoundError('Method is not callable: %s', method_name)
-
-            self._methods[method_name] = method
-
-        return (msg_id, method, args)
+        if hasattr(self, '_disconnect'): self._disconnect()
 
     cdef _send_result(self, object result, int msg_id, _RPCConnection conn):
         msg = (MSGPACKRPC_RESPONSE, msg_id, None, result)
@@ -137,6 +135,9 @@ cdef class _RPCConnection:
 
     def __init__(self, socket):
         self._socket = socket
+
+    def getpeername(self):
+        return self._socket.getpeername()
 
     cdef recv(self, int buf_size):
         return self._socket.recv(buf_size)

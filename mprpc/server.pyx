@@ -49,6 +49,7 @@ cdef class RPCServer:
         self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))
 
         self._tcp_no_delay = kwargs.pop('tcp_no_delay', True)
+        self._send_error_traceback = kwargs.pop('send_error_traceback', True)
         self._methods = dict((k, v) for k, v in inspect.getmembers(self, predicate=inspect.ismethod) if k[0] != '_')
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
@@ -113,7 +114,10 @@ cdef class RPCServer:
             except Exception, e:
                 if hasattr(self, '_error'):
                     self._error('method_fn', method_name=method_name, args=args, e=e)
-                self._send_error('error', msg_id, conn)
+                if self._send_error_traceback:
+                    self._send_error(str(e), msg_id, conn)
+                else:
+                    self._send_error('error', msg_id, conn)
                 continue
 
             else:

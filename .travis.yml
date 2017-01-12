@@ -6,8 +6,9 @@ python:
   - "3.4"
   - "3.5"
 before_install:
-  - "sudo apt-get install python-dev"
+  - "sudo apt-get install python-dev cython"
 install:
   - pip install -r requirements.txt
+  - cython mprpc/*.pyx
 script:
   - python setup.py test

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 import time
 import msgpackrpc
 import multiprocessing
+
+import sys
 
 NUM_CALLS = 10000
 
@@ -21,9 +24,14 @@ def call():
     client = msgpackrpc.Client(msgpackrpc.Address("localhost", 6000))
 
     start = time.time()
-    [client.call('sum', 1, 2) for _ in xrange(NUM_CALLS)]
+    if sys.version_info < (3,):
+        range = xrange
+    else:
+        import builtins
+        range = builtins.range
+    [client.call('sum', 1, 2) for _ in range(NUM_CALLS)]
 
-    print 'call: %d qps' % (NUM_CALLS / (time.time() - start))
+    print('call: %d qps' % (NUM_CALLS / (time.time() - start)))
 
 
 if __name__ == '__main__':

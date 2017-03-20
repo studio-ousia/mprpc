@@ -7,8 +7,8 @@ import time
 from gevent import socket
 from gsocketpool.connection import Connection
 
-from exceptions import RPCProtocolError, RPCError
-from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
+from mprpc.exceptions import RPCProtocolError, RPCError
+from mprpc.constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 
 
 cdef class RPCClient:
@@ -42,6 +42,7 @@ cdef class RPCClient:
     cdef _timeout
     cdef _socket
     cdef _packer
+    cdef _pack_params
     cdef _unpack_encoding
     cdef _unpack_params
     cdef _tcp_no_delay
@@ -49,7 +50,7 @@ cdef class RPCClient:
 
     def __init__(self, host, port, timeout=None, lazy=False,
                  pack_encoding='utf-8', unpack_encoding='utf-8',
-                 pack_params=dict(), unpack_params=dict(use_list=False),
+                 pack_params=None, unpack_params=None,
                  tcp_no_delay=False, keep_alive=False):
         self._host = host
         self._port = port
@@ -59,8 +60,9 @@ cdef class RPCClient:
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
         self._keep_alive = keep_alive
+        self._pack_params = pack_params or dict()
         self._unpack_encoding = unpack_encoding
-        self._unpack_params = unpack_params
+        self._unpack_params = unpack_params or dict(use_list=False)
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 

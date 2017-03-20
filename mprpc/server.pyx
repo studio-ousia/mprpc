@@ -62,7 +62,6 @@ cdef class RPCServer:
 
     def _run(self, _RPCConnection conn):
         cdef bytes data
-        cdef tuple req, args
         cdef int msg_id
 
         unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
@@ -78,13 +77,12 @@ cdef class RPCServer:
             except StopIteration:
                 continue
 
-            if type(req) != tuple:
+            if type(req) not in (tuple, list):
                 self._send_error("Invalid protocol", -1, conn)
                 # reset unpacker as it might have garbage data
                 unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
-                                    **self._unpack_params)
+                                            **self._unpack_params)
                 continue
-
 
             (msg_id, method, args) = self._parse_request(req)
 
@@ -97,11 +95,10 @@ cdef class RPCServer:
             else:
                 self._send_result(ret, msg_id, conn)
 
-    cdef tuple _parse_request(self, tuple req):
+    cdef tuple _parse_request(self, req):
         if (len(req) != 4 or req[0] != MSGPACKRPC_REQUEST):
             raise RPCProtocolError('Invalid protocol')
 
-        cdef tuple args
         cdef int msg_id
 
         (_, msg_id, method_name, args) = req

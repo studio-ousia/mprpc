@@ -142,13 +142,13 @@ cdef class RPCClient:
             except StopIteration:
                 continue
 
-        if type(response) != tuple:
+        if type(response) not in (tuple, list):
             logging.debug('Protocol error, received unexpected data: {}'.format(data))
             raise RPCProtocolError('Invalid protocol')
 
         return self._parse_response(response)
 
-    cdef bytes _create_request(self, method, tuple args):
+    cdef bytes _create_request(self, method, args):
         self._msg_id += 1
 
         cdef tuple req
@@ -156,7 +156,7 @@ cdef class RPCClient:
 
         return self._packer.pack(req)
 
-    cdef _parse_response(self, tuple response):
+    cdef _parse_response(self, response):
         if (len(response) != 4 or response[0] != MSGPACKRPC_RESPONSE):
             raise RPCProtocolError('Invalid protocol')
 

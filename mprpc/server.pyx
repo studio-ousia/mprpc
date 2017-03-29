@@ -6,6 +6,7 @@ import msgpack
 
 from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 from exceptions import MethodNotFoundError, RPCProtocolError
+from gevent.local import local
 
 
 cdef class RPCServer:
@@ -39,6 +40,7 @@ cdef class RPCServer:
     cdef _unpack_params
     cdef _tcp_no_delay
     cdef _methods
+    cdef _address
 
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
@@ -52,13 +54,29 @@ cdef class RPCServer:
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 
+        self._address = local()
+        self._address.host = None
+        self._address.port = None
+
         if args and isinstance(args[0], gevent.socket.socket):
             self._run(_RPCConnection(args[0]))
 
-    def __call__(self, sock, _):
+    def __call__(self, sock, address):
         if self._tcp_no_delay:
             sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)
+
+        self._address.host = address[0]
+        self._address.port = address[1]
+
         self._run(_RPCConnection(sock))
+
+    property host:
+        def __get__(self):
+            return self._address.host
+
+    property port:
+        def __get__(self):
+            return self._address.port
 
     def _run(self, _RPCConnection conn):
         cdef bytes data

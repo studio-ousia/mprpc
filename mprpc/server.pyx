@@ -39,6 +39,7 @@ cdef class RPCServer:
     cdef _unpack_params
     cdef _tcp_no_delay
     cdef _methods
+    cdef public _client
 
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
@@ -55,9 +56,10 @@ cdef class RPCServer:
         if args and isinstance(args[0], gevent.socket.socket):
             self._run(_RPCConnection(args[0]))
 
-    def __call__(self, sock, _):
+    def __call__(self, sock, _client):
         if self._tcp_no_delay:
             sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)
+        self._client = _client
         self._run(_RPCConnection(sock))
 
     def _run(self, _RPCConnection conn):

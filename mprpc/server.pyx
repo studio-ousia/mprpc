@@ -6,6 +6,7 @@ import msgpack
 
 from constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
 from exceptions import MethodNotFoundError, RPCProtocolError
+from gevent.local import local
 
 
 cdef class RPCServer:
@@ -59,7 +60,9 @@ cdef class RPCServer:
     def __call__(self, sock, _client):
         if self._tcp_no_delay:
             sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)
-        self._client = _client
+        self._client = local()
+        self._client.addr = _client[0]
+        self._client.port = _client[1]
         self._run(_RPCConnection(sock))
 
     def _run(self, _RPCConnection conn):

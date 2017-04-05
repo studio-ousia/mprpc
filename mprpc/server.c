@@ -875,10 +875,8 @@ static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_run[] = "_run";
 static const char __pyx_k_call[] = "__call__";
 static const char __pyx_k_feed[] = "feed";
-static const char __pyx_k_host[] = "host";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_pack[] = "pack";
-static const char __pyx_k_port[] = "port";
 static const char __pyx_k_recv[] = "recv";
 static const char __pyx_k_sock[] = "sock";
 static const char __pyx_k_test[] = "__test__";
@@ -904,6 +902,8 @@ static const char __pyx_k_setsockopt[] = "setsockopt";
 static const char __pyx_k_startswith[] = "startswith";
 static const char __pyx_k_IPPROTO_TCP[] = "IPPROTO_TCP";
 static const char __pyx_k_TCP_NODELAY[] = "TCP_NODELAY";
+static const char __pyx_k_client_host[] = "client_host";
+static const char __pyx_k_client_port[] = "client_port";
 static const char __pyx_k_pack_params[] = "pack_params";
 static const char __pyx_k_gevent_local[] = "gevent.local";
 static const char __pyx_k_tcp_no_delay[] = "tcp_no_delay";
@@ -937,6 +937,8 @@ static PyObject *__pyx_n_s_Unpacker;
 static PyObject *__pyx_n_s__5;
 static PyObject *__pyx_n_s_address;
 static PyObject *__pyx_n_s_call;
+static PyObject *__pyx_n_s_client_host;
+static PyObject *__pyx_n_s_client_port;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_constants;
 static PyObject *__pyx_n_s_encoding;
@@ -946,7 +948,6 @@ static PyObject *__pyx_n_s_get;
 static PyObject *__pyx_n_s_gevent;
 static PyObject *__pyx_n_s_gevent_local;
 static PyObject *__pyx_n_s_gevent_socket;
-static PyObject *__pyx_n_s_host;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_items;
 static PyObject *__pyx_n_s_local;
@@ -956,7 +957,6 @@ static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_pack_encoding;
 static PyObject *__pyx_n_s_pack_params;
 static PyObject *__pyx_n_s_pop;
-static PyObject *__pyx_n_s_port;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_recv;
 static PyObject *__pyx_n_s_run;
@@ -973,8 +973,8 @@ static PyObject *__pyx_n_s_use_list;
 static PyObject *__pyx_kp_s_utf_8;
 static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
 static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_2__call__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self, PyObject *__pyx_v_sock, PyObject *__pyx_v_address); /* proto */
-static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4host___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4port___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_11client_host___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_11client_port___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self, struct __pyx_obj_5mprpc_6server__RPCConnection *__pyx_v_conn); /* proto */
 static int __pyx_pf_5mprpc_6server_14_RPCConnection___init__(struct __pyx_obj_5mprpc_6server__RPCConnection *__pyx_v_self, PyObject *__pyx_v_socket); /* proto */
 static PyObject *__pyx_pf_5mprpc_6server_14_RPCConnection_2__del__(struct __pyx_obj_5mprpc_6server__RPCConnection *__pyx_v_self); /* proto */
@@ -1221,8 +1221,8 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
  *         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
  * 
  *         self._address = local()             # <<<<<<<<<<<<<<
- *         self._address.host = None
- *         self._address.port = None
+ *         self._address.client_host = None
+ *         self._address.client_port = None
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_local); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -1253,23 +1253,23 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
   /* "mprpc/server.pyx":58
  * 
  *         self._address = local()
- *         self._address.host = None             # <<<<<<<<<<<<<<
- *         self._address.port = None
+ *         self._address.client_host = None             # <<<<<<<<<<<<<<
+ *         self._address.client_port = None
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_host, Py_None) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_client_host, Py_None) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
 
   /* "mprpc/server.pyx":59
  *         self._address = local()
- *         self._address.host = None
- *         self._address.port = None             # <<<<<<<<<<<<<<
+ *         self._address.client_host = None
+ *         self._address.client_port = None             # <<<<<<<<<<<<<<
  * 
  *         if args and isinstance(args[0], gevent.socket.socket):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_port, Py_None) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_client_port, Py_None) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
 
   /* "mprpc/server.pyx":61
- *         self._address.port = None
+ *         self._address.client_port = None
  * 
  *         if args and isinstance(args[0], gevent.socket.socket):             # <<<<<<<<<<<<<<
  *             self._run(_RPCConnection(args[0]))
@@ -1347,7 +1347,7 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "mprpc/server.pyx":61
- *         self._address.port = None
+ *         self._address.client_port = None
  * 
  *         if args and isinstance(args[0], gevent.socket.socket):             # <<<<<<<<<<<<<<
  *             self._run(_RPCConnection(args[0]))
@@ -1475,7 +1475,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_2__call__(struct __pyx_obj_5
  *         if self._tcp_no_delay:
  *             sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)             # <<<<<<<<<<<<<<
  * 
- *         self._address.host = address[0]
+ *         self._address.client_host = address[0]
  */
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_sock, __pyx_n_s_setsockopt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -1539,33 +1539,33 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_2__call__(struct __pyx_obj_5
   /* "mprpc/server.pyx":68
  *             sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)
  * 
- *         self._address.host = address[0]             # <<<<<<<<<<<<<<
- *         self._address.port = address[1]
+ *         self._address.client_host = address[0]             # <<<<<<<<<<<<<<
+ *         self._address.client_port = address[1]
  * 
  */
   __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_address, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_host, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_client_host, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "mprpc/server.pyx":69
  * 
- *         self._address.host = address[0]
- *         self._address.port = address[1]             # <<<<<<<<<<<<<<
+ *         self._address.client_host = address[0]
+ *         self._address.client_port = address[1]             # <<<<<<<<<<<<<<
  * 
  *         self._run(_RPCConnection(sock))
  */
   __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_address, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_port, __pyx_t_2) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self->_address, __pyx_n_s_client_port, __pyx_t_2) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "mprpc/server.pyx":71
- *         self._address.port = address[1]
+ *         self._address.client_port = address[1]
  * 
  *         self._run(_RPCConnection(sock))             # <<<<<<<<<<<<<<
  * 
- *     property host:
+ *     property client_host:
  */
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_run); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -1633,40 +1633,40 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_2__call__(struct __pyx_obj_5
 
 /* "mprpc/server.pyx":74
  * 
- *     property host:
+ *     property client_host:
  *         def __get__(self):             # <<<<<<<<<<<<<<
- *             return self._address.host
+ *             return self._address.client_host
  * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_4host_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_4host_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_11client_host_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_11client_host_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5mprpc_6server_9RPCServer_4host___get__(((struct __pyx_obj_5mprpc_6server_RPCServer *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5mprpc_6server_9RPCServer_11client_host___get__(((struct __pyx_obj_5mprpc_6server_RPCServer *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4host___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self) {
+static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_11client_host___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
   /* "mprpc/server.pyx":75
- *     property host:
+ *     property client_host:
  *         def __get__(self):
- *             return self._address.host             # <<<<<<<<<<<<<<
+ *             return self._address.client_host             # <<<<<<<<<<<<<<
  * 
- *     property port:
+ *     property client_port:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_address, __pyx_n_s_host); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_address, __pyx_n_s_client_host); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1674,16 +1674,16 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4host___get__(struct __pyx_o
 
   /* "mprpc/server.pyx":74
  * 
- *     property host:
+ *     property client_host:
  *         def __get__(self):             # <<<<<<<<<<<<<<
- *             return self._address.host
+ *             return self._address.client_host
  * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("mprpc.server.RPCServer.host.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("mprpc.server.RPCServer.client_host.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1693,40 +1693,40 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4host___get__(struct __pyx_o
 
 /* "mprpc/server.pyx":78
  * 
- *     property port:
+ *     property client_port:
  *         def __get__(self):             # <<<<<<<<<<<<<<
- *             return self._address.port
+ *             return self._address.client_port
  * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_4port_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_4port_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_11client_port_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5mprpc_6server_9RPCServer_11client_port_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5mprpc_6server_9RPCServer_4port___get__(((struct __pyx_obj_5mprpc_6server_RPCServer *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5mprpc_6server_9RPCServer_11client_port___get__(((struct __pyx_obj_5mprpc_6server_RPCServer *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4port___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self) {
+static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_11client_port___get__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
   /* "mprpc/server.pyx":79
- *     property port:
+ *     property client_port:
  *         def __get__(self):
- *             return self._address.port             # <<<<<<<<<<<<<<
+ *             return self._address.client_port             # <<<<<<<<<<<<<<
  * 
  *     def _run(self, _RPCConnection conn):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_address, __pyx_n_s_port); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_address, __pyx_n_s_client_port); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1734,16 +1734,16 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4port___get__(struct __pyx_o
 
   /* "mprpc/server.pyx":78
  * 
- *     property port:
+ *     property client_port:
  *         def __get__(self):             # <<<<<<<<<<<<<<
- *             return self._address.port
+ *             return self._address.client_port
  * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("mprpc.server.RPCServer.port.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("mprpc.server.RPCServer.client_port.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1752,7 +1752,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4port___get__(struct __pyx_o
 }
 
 /* "mprpc/server.pyx":81
- *             return self._address.port
+ *             return self._address.client_port
  * 
  *     def _run(self, _RPCConnection conn):             # <<<<<<<<<<<<<<
  *         cdef bytes data
@@ -2321,7 +2321,7 @@ static PyObject *__pyx_pf_5mprpc_6server_9RPCServer_4_run(struct __pyx_obj_5mprp
   __pyx_L4_break:;
 
   /* "mprpc/server.pyx":81
- *             return self._address.port
+ *             return self._address.client_port
  * 
  *     def _run(self, _RPCConnection conn):             # <<<<<<<<<<<<<<
  *         cdef bytes data
@@ -3513,12 +3513,12 @@ static int __pyx_tp_clear_5mprpc_6server_RPCServer(PyObject *o) {
   return 0;
 }
 
-static PyObject *__pyx_getprop_5mprpc_6server_9RPCServer_host(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_5mprpc_6server_9RPCServer_4host_1__get__(o);
+static PyObject *__pyx_getprop_5mprpc_6server_9RPCServer_client_host(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5mprpc_6server_9RPCServer_11client_host_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_5mprpc_6server_9RPCServer_port(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_5mprpc_6server_9RPCServer_4port_1__get__(o);
+static PyObject *__pyx_getprop_5mprpc_6server_9RPCServer_client_port(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5mprpc_6server_9RPCServer_11client_port_1__get__(o);
 }
 
 static PyMethodDef __pyx_methods_5mprpc_6server_RPCServer[] = {
@@ -3527,8 +3527,8 @@ static PyMethodDef __pyx_methods_5mprpc_6server_RPCServer[] = {
 };
 
 static struct PyGetSetDef __pyx_getsets_5mprpc_6server_RPCServer[] = {
-  {(char *)"host", __pyx_getprop_5mprpc_6server_9RPCServer_host, 0, (char *)0, 0},
-  {(char *)"port", __pyx_getprop_5mprpc_6server_9RPCServer_port, 0, (char *)0, 0},
+  {(char *)"client_host", __pyx_getprop_5mprpc_6server_9RPCServer_client_host, 0, (char *)0, 0},
+  {(char *)"client_port", __pyx_getprop_5mprpc_6server_9RPCServer_client_port, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
@@ -3739,6 +3739,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 0, 1, 1},
   {&__pyx_n_s_address, __pyx_k_address, sizeof(__pyx_k_address), 0, 0, 1, 1},
   {&__pyx_n_s_call, __pyx_k_call, sizeof(__pyx_k_call), 0, 0, 1, 1},
+  {&__pyx_n_s_client_host, __pyx_k_client_host, sizeof(__pyx_k_client_host), 0, 0, 1, 1},
+  {&__pyx_n_s_client_port, __pyx_k_client_port, sizeof(__pyx_k_client_port), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_constants, __pyx_k_constants, sizeof(__pyx_k_constants), 0, 0, 1, 1},
   {&__pyx_n_s_encoding, __pyx_k_encoding, sizeof(__pyx_k_encoding), 0, 0, 1, 1},
@@ -3748,7 +3750,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_gevent, __pyx_k_gevent, sizeof(__pyx_k_gevent), 0, 0, 1, 1},
   {&__pyx_n_s_gevent_local, __pyx_k_gevent_local, sizeof(__pyx_k_gevent_local), 0, 0, 1, 1},
   {&__pyx_n_s_gevent_socket, __pyx_k_gevent_socket, sizeof(__pyx_k_gevent_socket), 0, 0, 1, 1},
-  {&__pyx_n_s_host, __pyx_k_host, sizeof(__pyx_k_host), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_items, __pyx_k_items, sizeof(__pyx_k_items), 0, 0, 1, 1},
   {&__pyx_n_s_local, __pyx_k_local, sizeof(__pyx_k_local), 0, 0, 1, 1},
@@ -3758,7 +3759,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pack_encoding, __pyx_k_pack_encoding, sizeof(__pyx_k_pack_encoding), 0, 0, 1, 1},
   {&__pyx_n_s_pack_params, __pyx_k_pack_params, sizeof(__pyx_k_pack_params), 0, 0, 1, 1},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
-  {&__pyx_n_s_port, __pyx_k_port, sizeof(__pyx_k_port), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_recv, __pyx_k_recv, sizeof(__pyx_k_recv), 0, 0, 1, 1},
   {&__pyx_n_s_run, __pyx_k_run, sizeof(__pyx_k_run), 0, 0, 1, 1},

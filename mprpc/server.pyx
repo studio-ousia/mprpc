@@ -55,8 +55,8 @@ cdef class RPCServer:
         self._packer = msgpack.Packer(encoding=pack_encoding, **pack_params)
 
         self._address = local()
-        self._address.host = None
-        self._address.port = None
+        self._address.client_host = None
+        self._address.client_port = None
 
         if args and isinstance(args[0], gevent.socket.socket):
             self._run(_RPCConnection(args[0]))
@@ -65,18 +65,18 @@ cdef class RPCServer:
         if self._tcp_no_delay:
             sock.setsockopt(gevent.socket.IPPROTO_TCP, gevent.socket.TCP_NODELAY, 1)
 
-        self._address.host = address[0]
-        self._address.port = address[1]
+        self._address.client_host = address[0]
+        self._address.client_port = address[1]
 
         self._run(_RPCConnection(sock))
 
-    property host:
+    property client_host:
         def __get__(self):
-            return self._address.host
+            return self._address.client_host
 
-    property port:
+    property client_port:
         def __get__(self):
-            return self._address.port
+            return self._address.client_port
 
     def _run(self, _RPCConnection conn):
         cdef bytes data

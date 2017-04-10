@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, Extension
 
 setup(
     name='mprpc',
@@ -10,7 +10,7 @@ setup(
     author='Studio Ousia',
     author_email='ikuya@ousia.jp',
     url='http://github.com/studio-ousia/mprpc',
-    packages=find_packages(),
+    packages=['mprpc'],
     ext_modules=[
         Extension('mprpc.client', ['mprpc/client.c']),
         Extension('mprpc.server', ['mprpc/server.c'])

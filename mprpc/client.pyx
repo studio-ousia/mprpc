@@ -1,7 +1,6 @@
 # cython: profile=False
 # -*- coding: utf-8 -*-
 
-import logging
 import msgpack
 import time
 from gevent import socket
@@ -9,6 +8,8 @@ from gsocketpool.connection import Connection
 
 from mprpc.exceptions import RPCProtocolError, RPCError
 from mprpc.constants import MSGPACKRPC_REQUEST, MSGPACKRPC_RESPONSE, SOCKET_RECV_SIZE
+
+from mprpc import logger
 
 
 cdef class RPCClient:
@@ -78,7 +79,7 @@ cdef class RPCClient:
 
         assert self._socket is None, 'The connection has already been established'
 
-        logging.debug('openning a msgpackrpc connection')
+        logger.debug('openning a msgpackrpc connection')
 
         if self._timeout:
             self._socket = socket.create_connection((self._host, self._port),
@@ -100,11 +101,11 @@ cdef class RPCClient:
 
         assert self._socket is not None, 'Attempt to close an unopened socket'
 
-        logging.debug('Closing a msgpackrpc connection')
+        logger.debug('Closing a msgpackrpc connection')
         try:
             self._socket.close()
         except:
-            logging.exception('An error has occurred while closing the socket')
+            logger.exception('An error has occurred while closing the socket')
 
         self._socket = None
 
@@ -145,7 +146,7 @@ cdef class RPCClient:
                 continue
 
         if type(response) not in (tuple, list):
-            logging.debug('Protocol error, received unexpected data: {}'.format(data))
+            logger.debug('Protocol error, received unexpected data: {}'.format(data))
             raise RPCProtocolError('Invalid protocol')
 
         return self._parse_response(response)

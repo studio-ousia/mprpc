@@ -47,6 +47,7 @@ cdef class RPCClient:
     cdef _unpack_params
     cdef _tcp_no_delay
     cdef _keep_alive
+    cdef _log
 
     def __init__(self, host, port, timeout=None, lazy=False,
                  pack_encoding='utf-8',
@@ -70,10 +71,9 @@ cdef class RPCClient:
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **self._pack_params)
 
-        if log_path is None:
-            self.log = logging.getLogger("MpRPC")
-        else:
-            self.log = logging.getLogger(log_path)
+        self._log = logging.getLogger("MpRPC")
+        if log_path is not None:
+            self._log = logging.getLogger(log_path)
 
 
         if not lazy:
@@ -88,7 +88,7 @@ cdef class RPCClient:
 
         assert self._socket is None, 'The connection has already been established'
 
-        self.log.debug('openning a msgpackrpc connection')
+        self._log.debug('openning a msgpackrpc connection')
 
         if self._timeout:
             self._socket = socket.create_connection((self._host, self._port),
@@ -110,11 +110,11 @@ cdef class RPCClient:
 
         assert self._socket is not None, 'Attempt to close an unopened socket'
 
-        self.log.debug('Closing a msgpackrpc connection')
+        self._log.debug('Closing a msgpackrpc connection')
         try:
             self._socket.close()
         except:
-            self.log.exception('An error has occurred while closing the socket')
+            self._log.exception('An error has occurred while closing the socket')
 
         self._socket = None
 
@@ -155,7 +155,7 @@ cdef class RPCClient:
                 continue
 
         if type(response) not in (tuple, list):
-            self.log.debug('Protocol error, received unexpected data: {}'.format(data))
+            self._log.debug('Protocol error, received unexpected data: {}'.format(data))
             raise RPCProtocolError('Invalid protocol')
 
         return self._parse_response(response)

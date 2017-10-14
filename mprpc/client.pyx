@@ -49,17 +49,17 @@ cdef class RPCClient:
     cdef _keep_alive
 
     def __init__(self, host, port, timeout=None, lazy=False,
-                 pack_encoding='utf-8', 
+                 pack_encoding='utf-8',
                  unpack_encoding='utf-8',
-                 pack_params=None, 
+                 pack_params=None,
                  unpack_params=None,
-                 tcp_no_delay=False, 
+                 tcp_no_delay=False,
                  keep_alive=False,
                  log_path=None):
         self._host = host
         self._port = port
         self._timeout = timeout
-        
+
         self._msg_id = 0
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
@@ -69,13 +69,13 @@ cdef class RPCClient:
         self._unpack_params = unpack_params or dict(use_list=False)
 
         self._packer = msgpack.Packer(encoding=pack_encoding, **self._pack_params)
-        
-        if log_path is none:
+
+        if log_path is None:
             self.log = logging.getLogger("MpRPC")
         else:
             self.log = logging.getLogger(log_path)
-            
-        
+
+
         if not lazy:
             self.open()
 
@@ -88,7 +88,7 @@ cdef class RPCClient:
 
         assert self._socket is None, 'The connection has already been established'
 
-       self.logdebug('openning a msgpackrpc connection')
+        self.log.debug('openning a msgpackrpc connection')
 
         if self._timeout:
             self._socket = socket.create_connection((self._host, self._port),

@@ -955,6 +955,7 @@ static const char __pyx_k_pack_params[] = "pack_params";
 static const char __pyx_k_SO_KEEPALIVE[] = "SO_KEEPALIVE";
 static const char __pyx_k_mprpc_client[] = "mprpc.client";
 static const char __pyx_k_tcp_no_delay[] = "tcp_no_delay";
+static const char __pyx_k_use_bin_type[] = "use_bin_type";
 static const char __pyx_k_RPCPoolClient[] = "RPCPoolClient";
 static const char __pyx_k_StopIteration[] = "StopIteration";
 static const char __pyx_k_pack_encoding[] = "pack_encoding";
@@ -1064,6 +1065,7 @@ static PyObject *__pyx_n_s_time;
 static PyObject *__pyx_n_s_timeout;
 static PyObject *__pyx_n_s_unpack_encoding;
 static PyObject *__pyx_n_s_unpack_params;
+static PyObject *__pyx_n_s_use_bin_type;
 static PyObject *__pyx_n_s_use_list;
 static PyObject *__pyx_kp_s_utf_8;
 static int __pyx_pf_5mprpc_6client_9RPCClient___init__(struct __pyx_obj_5mprpc_6client_RPCClient *__pyx_v_self, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_timeout, PyObject *__pyx_v_lazy, PyObject *__pyx_v_pack_encoding, PyObject *__pyx_v_unpack_encoding, PyObject *__pyx_v_pack_params, PyObject *__pyx_v_unpack_params, PyObject *__pyx_v_tcp_no_delay, PyObject *__pyx_v_keep_alive); /* proto */
@@ -1342,7 +1344,7 @@ static int __pyx_pf_5mprpc_6client_9RPCClient___init__(struct __pyx_obj_5mprpc_6
  *         self._socket = None
  *         self._tcp_no_delay = tcp_no_delay             # <<<<<<<<<<<<<<
  *         self._keep_alive = keep_alive
- *         self._pack_params = pack_params or dict()
+ *         self._pack_params = pack_params or dict(use_bin_type=True)
  */
   __Pyx_INCREF(__pyx_v_tcp_no_delay);
   __Pyx_GIVEREF(__pyx_v_tcp_no_delay);
@@ -1354,7 +1356,7 @@ static int __pyx_pf_5mprpc_6client_9RPCClient___init__(struct __pyx_obj_5mprpc_6
  *         self._socket = None
  *         self._tcp_no_delay = tcp_no_delay
  *         self._keep_alive = keep_alive             # <<<<<<<<<<<<<<
- *         self._pack_params = pack_params or dict()
+ *         self._pack_params = pack_params or dict(use_bin_type=True)
  *         self._unpack_encoding = unpack_encoding
  */
   __Pyx_INCREF(__pyx_v_keep_alive);
@@ -1366,7 +1368,7 @@ static int __pyx_pf_5mprpc_6client_9RPCClient___init__(struct __pyx_obj_5mprpc_6
   /* "mprpc/client.pyx":64
  *         self._tcp_no_delay = tcp_no_delay
  *         self._keep_alive = keep_alive
- *         self._pack_params = pack_params or dict()             # <<<<<<<<<<<<<<
+ *         self._pack_params = pack_params or dict(use_bin_type=True)             # <<<<<<<<<<<<<<
  *         self._unpack_encoding = unpack_encoding
  *         self._unpack_params = unpack_params or dict(use_list=False)
  */
@@ -1379,6 +1381,7 @@ static int __pyx_pf_5mprpc_6client_9RPCClient___init__(struct __pyx_obj_5mprpc_6
   }
   __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_use_bin_type, Py_True) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_INCREF(__pyx_t_4);
   __pyx_t_1 = __pyx_t_4;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -1391,7 +1394,7 @@ static int __pyx_pf_5mprpc_6client_9RPCClient___init__(struct __pyx_obj_5mprpc_6
 
   /* "mprpc/client.pyx":65
  *         self._keep_alive = keep_alive
- *         self._pack_params = pack_params or dict()
+ *         self._pack_params = pack_params or dict(use_bin_type=True)
  *         self._unpack_encoding = unpack_encoding             # <<<<<<<<<<<<<<
  *         self._unpack_params = unpack_params or dict(use_list=False)
  * 
@@ -1403,7 +1406,7 @@ static int __pyx_pf_5mprpc_6client_9RPCClient___init__(struct __pyx_obj_5mprpc_6
   __pyx_v_self->_unpack_encoding = __pyx_v_unpack_encoding;
 
   /* "mprpc/client.pyx":66
- *         self._pack_params = pack_params or dict()
+ *         self._pack_params = pack_params or dict(use_bin_type=True)
  *         self._unpack_encoding = unpack_encoding
  *         self._unpack_params = unpack_params or dict(use_list=False)             # <<<<<<<<<<<<<<
  * 
@@ -4487,6 +4490,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_timeout, __pyx_k_timeout, sizeof(__pyx_k_timeout), 0, 0, 1, 1},
   {&__pyx_n_s_unpack_encoding, __pyx_k_unpack_encoding, sizeof(__pyx_k_unpack_encoding), 0, 0, 1, 1},
   {&__pyx_n_s_unpack_params, __pyx_k_unpack_params, sizeof(__pyx_k_unpack_params), 0, 0, 1, 1},
+  {&__pyx_n_s_use_bin_type, __pyx_k_use_bin_type, sizeof(__pyx_k_use_bin_type), 0, 0, 1, 1},
   {&__pyx_n_s_use_list, __pyx_k_use_list, sizeof(__pyx_k_use_list), 0, 0, 1, 1},
   {&__pyx_kp_s_utf_8, __pyx_k_utf_8, sizeof(__pyx_k_utf_8), 0, 0, 1, 0},
   {0, 0, 0, 0, 0, 0, 0}

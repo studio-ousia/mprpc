@@ -907,6 +907,7 @@ static const char __pyx_k_client_port[] = "client_port";
 static const char __pyx_k_pack_params[] = "pack_params";
 static const char __pyx_k_gevent_local[] = "gevent.local";
 static const char __pyx_k_tcp_no_delay[] = "tcp_no_delay";
+static const char __pyx_k_use_bin_type[] = "use_bin_type";
 static const char __pyx_k_StopIteration[] = "StopIteration";
 static const char __pyx_k_gevent_socket[] = "gevent.socket";
 static const char __pyx_k_pack_encoding[] = "pack_encoding";
@@ -969,6 +970,7 @@ static PyObject *__pyx_n_s_tcp_no_delay;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_unpack_encoding;
 static PyObject *__pyx_n_s_unpack_params;
+static PyObject *__pyx_n_s_use_bin_type;
 static PyObject *__pyx_n_s_use_list;
 static PyObject *__pyx_kp_s_utf_8;
 static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6server_RPCServer *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
@@ -992,7 +994,7 @@ static PyObject *__pyx_tuple__6;
  * 
  *     def __init__(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
- *         pack_params = kwargs.pop('pack_params', dict())
+ *         pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))
  */
 
 /* Python wrapper */
@@ -1037,7 +1039,7 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
  * 
  *     def __init__(self, *args, **kwargs):
  *         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')             # <<<<<<<<<<<<<<
- *         pack_params = kwargs.pop('pack_params', dict())
+ *         pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))
  * 
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_kwargs, __pyx_n_s_pop); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
@@ -1051,7 +1053,7 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
   /* "mprpc/server.pyx":47
  *     def __init__(self, *args, **kwargs):
  *         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
- *         pack_params = kwargs.pop('pack_params', dict())             # <<<<<<<<<<<<<<
+ *         pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))             # <<<<<<<<<<<<<<
  * 
  *         self._unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
  */
@@ -1059,6 +1061,7 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_use_bin_type, Py_True) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
@@ -1090,7 +1093,7 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
   __pyx_t_2 = 0;
 
   /* "mprpc/server.pyx":49
- *         pack_params = kwargs.pop('pack_params', dict())
+ *         pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))
  * 
  *         self._unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')             # <<<<<<<<<<<<<<
  *         self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))
@@ -1360,7 +1363,7 @@ static int __pyx_pf_5mprpc_6server_9RPCServer___init__(struct __pyx_obj_5mprpc_6
  * 
  *     def __init__(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
- *         pack_params = kwargs.pop('pack_params', dict())
+ *         pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))
  */
 
   /* function exit code */
@@ -3771,6 +3774,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_unpack_encoding, __pyx_k_unpack_encoding, sizeof(__pyx_k_unpack_encoding), 0, 0, 1, 1},
   {&__pyx_n_s_unpack_params, __pyx_k_unpack_params, sizeof(__pyx_k_unpack_params), 0, 0, 1, 1},
+  {&__pyx_n_s_use_bin_type, __pyx_k_use_bin_type, sizeof(__pyx_k_use_bin_type), 0, 0, 1, 1},
   {&__pyx_n_s_use_list, __pyx_k_use_list, sizeof(__pyx_k_use_list), 0, 0, 1, 1},
   {&__pyx_kp_s_utf_8, __pyx_k_utf_8, sizeof(__pyx_k_utf_8), 0, 0, 1, 0},
   {0, 0, 0, 0, 0, 0, 0}
@@ -3791,7 +3795,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     def __init__(self, *args, **kwargs):
  *         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')             # <<<<<<<<<<<<<<
- *         pack_params = kwargs.pop('pack_params', dict())
+ *         pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))
  * 
  */
   __pyx_tuple_ = PyTuple_Pack(2, __pyx_n_s_pack_encoding, __pyx_kp_s_utf_8); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 46, __pyx_L1_error)
@@ -3799,7 +3803,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple_);
 
   /* "mprpc/server.pyx":49
- *         pack_params = kwargs.pop('pack_params', dict())
+ *         pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))
  * 
  *         self._unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')             # <<<<<<<<<<<<<<
  *         self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))

@@ -44,7 +44,7 @@ cdef class RPCServer:
 
     def __init__(self, *args, **kwargs):
         pack_encoding = kwargs.pop('pack_encoding', 'utf-8')
-        pack_params = kwargs.pop('pack_params', dict())
+        pack_params = kwargs.pop('pack_params', dict(use_bin_type=True))
 
         self._unpack_encoding = kwargs.pop('unpack_encoding', 'utf-8')
         self._unpack_params = kwargs.pop('unpack_params', dict(use_list=False))

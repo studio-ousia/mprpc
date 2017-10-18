@@ -61,7 +61,7 @@ cdef class RPCClient:
         self._socket = None
         self._tcp_no_delay = tcp_no_delay
         self._keep_alive = keep_alive
-        self._pack_params = pack_params or dict()
+        self._pack_params = pack_params or dict(use_bin_type=True)
         self._unpack_encoding = unpack_encoding
         self._unpack_params = unpack_params or dict(use_list=False)
 

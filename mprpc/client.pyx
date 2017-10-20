@@ -3,6 +3,7 @@
 
 import msgpack
 import time
+import sys
 from gevent import socket
 from gsocketpool.connection import Connection
 
@@ -120,12 +121,16 @@ cdef class RPCClient:
         else:
             return False
 
-    def call(self, str method, *args):
+    def call(self, str method_str, *args):
         """Calls a RPC method.
 
         :param str method: Method name.
         :param args: Method arguments.
         """
+        if sys.version_info.major >= 3:
+            method = method_str
+        else:
+            method = unicode(method_str)
 
         cdef bytes req = self._create_request(method, args)
 

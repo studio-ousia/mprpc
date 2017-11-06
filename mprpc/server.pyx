@@ -108,7 +108,7 @@ cdef class RPCServer:
                 ret = method(*args)
 
             except Exception, e:
-                self._send_error(str(e), msg_id, conn)
+                self._send_error(str(e), msg_id, conn, type(e).__module__, type(e).__name__)
 
             else:
                 self._send_result(ret, msg_id, conn)
@@ -142,8 +142,8 @@ cdef class RPCServer:
         msg = (MSGPACKRPC_RESPONSE, msg_id, None, result)
         conn.send(self._packer.pack(msg))
 
-    cdef _send_error(self, str error, int msg_id, _RPCConnection conn):
-        msg = (MSGPACKRPC_RESPONSE, msg_id, error, None)
+    cdef _send_error(self, str error, int msg_id, _RPCConnection conn, str exc_mod='', str exc_tp=''):
+        msg = (MSGPACKRPC_RESPONSE, msg_id, (error, exc_mod, exc_tp), None)
         conn.send(self._packer.pack(msg))
 
 

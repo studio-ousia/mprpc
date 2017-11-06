@@ -10,4 +10,6 @@ class MethodNotFoundError(Exception):
 
 
 class RPCError(Exception):
-    pass
+    remote_exception_module = None
+    remote_exception_type = None
+

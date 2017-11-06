@@ -170,6 +170,11 @@ cdef class RPCClient:
             raise RPCError('Invalid Message ID')
 
         if error:
+            if isinstance(error, tuple):
+                exc = RPCError(str(error[0]))
+                exc.remote_exception_module = error[1]
+                exc.remote_exception_type = error[2]
+                raise exc
             raise RPCError(str(error))
 
         return result

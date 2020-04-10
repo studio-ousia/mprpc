@@ -86,3 +86,8 @@ class TestRPC(object):
         client = RPCClient(HOST, PORT, timeout=0.1)
 
         client.call('echo_delayed', 'message', 1)
+
+    def test_with_statement(self):
+        with RPCClient(HOST, PORT) as client:
+            ret = client.call('echo', 'message')
+            eq_('message', ret)

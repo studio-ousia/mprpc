@@ -64,6 +64,12 @@ cdef class RPCClient:
         if not lazy:
             self.open()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def getpeername(self):
         """Return the address of the remote endpoint."""
         return self._host, self._port

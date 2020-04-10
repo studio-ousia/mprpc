@@ -26,10 +26,6 @@ cdef class RPCClient:
     :param int timeout: (optional) Socket timeout.
     :param bool lazy: (optional) If set to True, the socket connection is not
         established until you specifically call open()
-    :param str pack_encoding: (optional) Character encoding used to pack data
-        using Messagepack.
-    :param str unpack_encoding: (optional) Character encoding used to unpack
-        data using Messagepack.
     :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
     :param dict unpack_params: (optional) Parameters to pass to Messagepack
     :param tcp_no_delay (optional) If set to True, use TCP_NODELAY.
@@ -44,15 +40,14 @@ cdef class RPCClient:
     cdef _socket
     cdef _packer
     cdef _pack_params
-    cdef _unpack_encoding
     cdef _unpack_params
     cdef _tcp_no_delay
     cdef _keep_alive
 
     def __init__(self, host, port, timeout=None, lazy=False,
-                 pack_encoding='utf-8', unpack_encoding='utf-8',
                  pack_params=None, unpack_params=None,
                  tcp_no_delay=False, keep_alive=False):
+
         self._host = host
         self._port = port
         self._timeout = timeout
@@ -62,10 +57,9 @@ cdef class RPCClient:
         self._tcp_no_delay = tcp_no_delay
         self._keep_alive = keep_alive
         self._pack_params = pack_params or dict(use_bin_type=True)
-        self._unpack_encoding = unpack_encoding
         self._unpack_params = unpack_params or dict(use_list=False)
 
-        self._packer = msgpack.Packer(encoding=pack_encoding, **self._pack_params)
+        self._packer = msgpack.Packer(**self._pack_params)
 
         if not lazy:
             self.open()
@@ -132,7 +126,7 @@ cdef class RPCClient:
         cdef bytes data
         self._socket.sendall(req)
 
-        unpacker = msgpack.Unpacker(encoding=self._unpack_encoding,
+        unpacker = msgpack.Unpacker(raw=False,
                                     **self._unpack_params)
         while True:
             data = self._socket.recv(SOCKET_RECV_SIZE)
@@ -192,10 +186,6 @@ class RPCPoolClient(RPCClient, Connection):
     :param int timeout: (optional) Socket timeout.
     :param int lifetime: (optional) Connection lifetime in seconds. Only valid
         when used with `gsocketpool.pool.Pool <http://gsocketpool.readthedocs.org/en/latest/api.html#gsocketpool.pool.Pool>`_.
-    :param str pack_encoding: (optional) Character encoding used to pack data
-        using Messagepack.
-    :param str unpack_encoding: (optional) Character encoding used to unpack
-        data using Messagepack.
     :param dict pack_params: (optional) Parameters to pass to Messagepack Packer
     :param dict unpack_params: (optional) Parameters to pass to Messagepack
     :param tcp_no_delay (optional) If set to True, use TCP_NODELAY.
@@ -204,7 +194,7 @@ class RPCPoolClient(RPCClient, Connection):
     """
 
     def __init__(self, host, port, timeout=None, lifetime=None,
-                 pack_encoding='utf-8', unpack_encoding='utf-8',
+                 pack_encoding='', unpack_encoding='',
                  pack_params=dict(), unpack_params=dict(use_list=False),
                  tcp_no_delay=False, keep_alive=False):
 
@@ -216,7 +206,6 @@ class RPCPoolClient(RPCClient, Connection):
 
         RPCClient.__init__(
             self, host, port, timeout=timeout, lazy=True,
-            pack_encoding=pack_encoding, unpack_encoding=unpack_encoding,
             pack_params=pack_params, unpack_params=unpack_params,
             tcp_no_delay=tcp_no_delay, keep_alive=keep_alive)
 

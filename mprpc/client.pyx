@@ -133,6 +133,7 @@ cdef class RPCClient:
         self._socket.sendall(req)
 
         unpacker = msgpack.Unpacker(raw=False,
+                                    strict_map_key=False,  # allow keys which is of of type bytes or str
                                     **self._unpack_params)
         while True:
             data = self._socket.recv(SOCKET_RECV_SIZE)

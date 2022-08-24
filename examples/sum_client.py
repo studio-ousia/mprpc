@@ -9,7 +9,7 @@ from mprpc import RPCClient, RPCPoolClient
 def call():
     client = RPCClient('127.0.0.1', 6000)
 
-    print client.call('sum', 1, 2)
+    print( client.call('sum', 1, 2))
 
 
 def call_using_pool():
@@ -21,7 +21,7 @@ def call_using_pool():
             return client.call('sum', 1, 2)
 
     glet_pool = gevent.pool.Pool(10)
-    print [result for result in glet_pool.imap_unordered(_call, xrange(10))]
+    print([result for result in glet_pool.imap_unordered(_call, xrange(10))])
 
 
 call()

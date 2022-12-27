@@ -1,11 +1,7 @@
 mprpc
 =====
 
-.. image:: https://badge.fury.io/py/mprpc.png
-    :target: http://badge.fury.io/py/mprpc
-
-.. image:: https://travis-ci.org/studio-ousia/mprpc.png?branch=master
-    :target: https://travis-ci.org/studio-ousia/mprpc
+**This library is not actively maintained. Please consider using other alternatives such as `gRPC <https://grpc.io/>`_. **
 
 mprpc is a lightweight `MessagePack RPC <https://github.com/msgpack-rpc/msgpack-rpc>`_ library. It enables you to easily build a distributed server-side system by writing a small amount of code. It is built on top of `gevent <http://www.gevent.org/>`_ and `MessagePack <http://msgpack.org/>`_.
 

@@ -1,7 +1,6 @@
-Cython==0.21.2
-gevent==1.1b5
-greenlet==0.4.9
-gsocketpool==0.1.5
-mock==1.0.1
-msgpack-python==0.4.2
+Cython>=0.29
+gevent>=1.4.0
+gsocketpool>=0.1.6
+mock
+msgpack>=1.0.0
 nose==1.3.7

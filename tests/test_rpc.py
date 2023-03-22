@@ -69,20 +69,25 @@ class TestRPC(object):
         ret = client.call('echo', 'message' * 100)
         eq_('message' * 100, ret)
 
+        client.close()
+
+    def test_with_statement(self):
+        with RPCClient(HOST, PORT) as client:
+            ret = client.call('echo', 'message')
+            eq_('message', ret)
+
     @raises(RPCError)
     def test_call_server_side_exception(self):
-        client = RPCClient(HOST, PORT)
-
-        try:
-            ret = client.call('raise_error')
-        except RPCError as e:
-            eq_('error msg', str(e))
-            raise
+        with RPCClient(HOST, PORT) as client:
+            try:
+                ret = client.call('raise_error')
+            except RPCError as e:
+                eq_('error msg', str(e))
+                raise
 
         eq_('message', ret)
 
     @raises(socket.timeout)
     def test_call_socket_timeout(self):
-        client = RPCClient(HOST, PORT, timeout=0.1)
-
-        client.call('echo_delayed', 'message', 1)
+        with RPCClient(HOST, PORT, timeout=0.1) as client:
+            client.call('echo_delayed', 'message', 1)
